@@ -1,0 +1,12 @@
+.vs/
+.idea/
+*.user
+*.suo
+bin/
+obj/
+x64/
+Debug/
+Release/
+out/
+__pycache__/
+*.html
