@@ -16,6 +16,25 @@
 
 #pragma pack(push,1)
 
+struct PointGeo {
+	double latitude; // rad
+	double longitude; // rad
+	float altitude; // m
+};
+
+struct PointECEF {
+	double x; // m
+	double y; // m
+	double z; // m
+};
+
+struct PointNED {
+	double north; // m
+	double east; // m
+	double down; // m
+	const PointECEF* origin; // relatied origin
+};
+
 /**
  * @struct Point
  * @brief Represents a point in a Local Tangent Plane (NED) coordinate system.
