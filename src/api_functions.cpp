@@ -3,7 +3,7 @@
 #include "no_heap.h"
 #include "cov_spy.h"
 
-#include <cmath>     // for fabs,sin,cos
+
 #include <cstddef>   // for nullptr
 
 #if defined(_DEBUG) || !defined(NDEBUG)
@@ -260,4 +260,34 @@ void doesLineIntersectPolygon(const Point* polygon, uint16_t pointCount, const P
 
     *outResult = false;
     return;
+}
+
+
+SPointECEF GeoToEcef(const SPointGeo* geoPoint)
+{
+    double latitude, longitude, altitude;
+    double rn, rn_plus_h_cos_lat;
+
+    const double oneMinusE2 = 1 - WGS84::E2;
+
+    // Latitude is valid in [-pi/2, pi/2]
+    latitude = geoPoint->latitude;
+
+    // Longitude is valid in [-pi, pi]
+    longitude = geoPoint->longitude;
+
+    altitude = geoPoint->altitude;
+
+    // Normal (east/west) prime vertical curvature radii (m)
+    rn = WGS84::RN(latitude);
+
+    rn_plus_h_cos_lat = ((rn + altitude) * std::cos(latitude));
+
+    // ECEF (m) position coordinates
+    SPointECEF ecef;
+    ecef.x = rn_plus_h_cos_lat * std::cos(longitude);
+    ecef.y = rn_plus_h_cos_lat * std::sin(longitude);
+    ecef.z = (oneMinusE2 * rn + altitude) * std::sin(latitude);
+
+    return ecef;
 }

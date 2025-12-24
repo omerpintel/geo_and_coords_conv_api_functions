@@ -12,28 +12,38 @@
 
 #include <cstdint>
 #include <cstddef> 
+#include <cmath>     // for fabs,sin,cos
 
 
 #pragma pack(push,1)
 
-struct PointGeo {
+struct SPointGeo {
 	double latitude; // rad
 	double longitude; // rad
 	float altitude; // m
 };
 
-struct PointECEF {
+struct SPointECEF {
 	double x; // m
 	double y; // m
 	double z; // m
 };
 
-struct PointNED {
+struct SPointNED {
 	double north; // m
 	double east; // m
 	double down; // m
-	const PointECEF* origin; // relatied origin
+	const SPointECEF* origin; // relatied origin
 };
+
+namespace WGS84 {
+	constexpr double F = 3.352810664747481e-003;           // Flattening
+	constexpr double A = 6.378137e6;                     // Semi-major axis (meters)
+	constexpr double E2 = 2.0 * F - F * F;              // Eccentricity squared
+	inline double W2(double latitude) { return 1 - E2 * std::sin(latitude) * std::sin(latitude); } // RT_OMEGA_WGS^2
+	inline double W(double latitude) { return std::sqrt(W2(latitude)); } // RT_OMEGA_WGS
+	inline double RN(double latitude) { return A / W(latitude); } // Normal (east/west) prime vertical curvature radii (m)
+}
 
 /**
  * @struct Point
@@ -114,6 +124,10 @@ extern "C" {
 		float maxLengthMeters,
 		bool* outResult,
 		EResultState* resultState
+	);
+
+	API_FUNCTIONS SPointECEF GeoToEcef(
+		const SPointGeo* geoPoint
 	);
 
 }
