@@ -129,5 +129,5 @@ def plot_tests_interactive(logfile):
 
 if __name__ == "__main__":
     # Update path if necessary
-    path = r"C:\Users\OMERPI\Desktop\GeoPointProject\out\build\x64-Debug\bin\test_results.log"
+    path = r"C:\Users\OMERPI\Desktop\GeoPointProject\out\build\x64-Debug\bin\test_results_wgs84.log"
     plot_tests_interactive(path)
