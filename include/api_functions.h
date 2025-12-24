@@ -10,81 +10,10 @@
 	#define API_FUNCTIONS
 #endif
 
-#include <cstdint>
-#include <cstddef> 
-#include <cmath>     // for fabs,sin,cos
-
-
-// --- Constants ---
-static const double PI = 3.14159265358979323846;
-static const double EPSILON = 1e-9;
-
-#pragma pack(push,1)
-
-struct SPointGeo {
-	double latitude; // rad
-	double longitude; // rad
-	float altitude; // m
-};
-
-struct SPointECEF {
-	double x; // m
-	double y; // m
-	double z; // m
-};
-
-struct SPointNED {
-	double north; // m
-	double east; // m
-	double down; // m
-};
-
-namespace WGS84 
-{
-	constexpr double F = 3.352810664747481e-003;           // Flattening
-	constexpr double A = 6.378137e6;                     // Semi-major axis (meters)
-	constexpr double E2 = 2.0 * F - F * F;              // Eccentricity squared
-	inline double W2(double latitude) { return 1 - E2 * std::sin(latitude) * std::sin(latitude); } // RT_OMEGA_WGS^2
-	inline double W(double latitude) { return std::sqrt(W2(latitude)); } // RT_OMEGA_WGS
-	inline double RN(double latitude) { return A / W(latitude); } // Normal (east/west) prime vertical curvature radii (m)
-}
-
-namespace EARTH_CONSTS
-{
-	constexpr double R0 = 6378137.0; // Nominal radius of earth (m)
-}
-
-namespace API_UTILS
-{
-	inline double safe_sqrt(double x, double default_value = 0.0) { return (x >= 0.0) ? std::sqrt(x) : default_value; }
-	inline double safe_div(double x, double y, double default_value = 0.0) { return (x >= 0.0) ? std::sqrt(x) : default_value; }
-}
-
-/**
- * @struct Point
- * @brief Represents a point in a Local Tangent Plane (NED) coordinate system.
- *
- * This structure uses Cartesian coordinates in meters, where 'north' corresponds
- * to the X-axis and 'east' to the Y-axis relative to a local origin.
- */
-struct Point {
-	float north; /**< Distance in meters along the North axis (X). */
-	float east;  /**< Distance in meters along the East axis (Y). */
-};
-
-/**
- * @enum ResultState
- * @brief determines the status of the result
- */
-enum EResultState
-{
-	OK								 = 0,
-	POLYGON_WITH_LESS_THAN_3_POINTS  = 1,
-	POLYGON_IS_NULL_PTR				 = 2,
-	MAX_LENGTH_LESS_OR_EQUAL_TO_ZERO = 3
-};
-
-#pragma pack(pop)
+#include "api_utils.h"
+#include "api_structs.h"
+#include "geometric_functions.h"
+#include "coords_conv_functions.h"
 
 extern "C" {
 	/**
@@ -141,17 +70,4 @@ extern "C" {
 		EResultState* resultState
 	);
 
-	API_FUNCTIONS SPointECEF GeoToEcef(
-		const SPointGeo* geoPoint
-	);
-
-	API_FUNCTIONS SPointGeo EcefToGeo(
-		const SPointECEF* ecefPoint
-	);
-
-	API_FUNCTIONS SPointNED EcefToNed(
-		const double* latitude,
-		const double* longitude,
-		const SPointECEF* ecefPoint
-	);
 }

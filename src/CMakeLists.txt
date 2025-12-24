@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.10)
 
-add_library(api_functions SHARED api_functions.cpp  "no_heap.cpp")
+add_library(api_functions SHARED api_functions.cpp  "no_heap.cpp" "geometric_functions.cpp" "coords_conv_functions.cpp")
 
 target_compile_definitions(api_functions PRIVATE API_FUNCTIONS_LIB_EXPORTS)
 
