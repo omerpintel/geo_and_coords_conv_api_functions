@@ -74,62 +74,64 @@ def run_stress_test():
     c_lon0 = ctypes.c_double(lon0_val)
 
     for i in range(NUM_TESTS):
-    #     # -------------------------------------------------
-    #     # TEST 1: Geo -> NED
-    #     # -------------------------------------------------
-    #     input_geo = get_random_geo(lat0_val, lon0_val)
-    #
-    #     # Pymap3d (Truth) - Assuming origin altitude is 0
-    #     pm_n, pm_e, pm_d = pm.geodetic2ned(
-    #         input_geo.latitudeDeg, input_geo.longitudeDeg, input_geo.altitude,
-    #         lat0_val, lon0_val, 0
-    #     )
-    #
-    #     # C++ API (Test)
-    #     res_ned = lib.GeoToNed(ctypes.byref(c_lat0), ctypes.byref(c_lon0), ctypes.byref(input_geo))
-    #
-    #     # Check Errors
-    #     diff_n = abs(res_ned.north - pm_n)
-    #     diff_e = abs(res_ned.east - pm_e)
-    #     diff_d = abs(res_ned.down - pm_d)
-    #     total_err = math.sqrt(diff_n ** 2 + diff_e ** 2 + diff_d ** 2)
-    #
-    #     max_error_ned = max(max_error_ned, total_err)
-    #
-    #     if total_err > TOLERANCE_POS_M:
-    #         print(f"[FAIL] GeoToNed Iteration {i}")
-    #         print(f"  Input: {input_geo.latitudeDeg}, {input_geo.longitudeDeg}")
-    #         print(f"  PyMap3d: {pm_n:.3f}, {pm_e:.3f}, {pm_d:.3f}")
-    #         print(f"  Cpp    : {res_ned.north:.3f}, {res_ned.east:.3f}, {res_ned.down:.3f}")
-    #         failed_count += 1
-
         # -------------------------------------------------
-        # TEST 2: NED -> Geo
+        # TEST 1: Geo -> NED
         # -------------------------------------------------
-        input_ned = get_random_ned()
+        input_geo = get_random_geo(lat0_val, lon0_val)
 
-        # Pymap3d (Truth)
-        pm_lat, pm_lon, pm_alt = pm.ned2geodetic(
-            input_ned.north, input_ned.east, input_ned.down,
+        # Pymap3d (Truth) - Assuming origin altitude is 0
+        pm_n, pm_e, pm_d = pm.geodetic2ned(
+            input_geo.latitudeDeg, input_geo.longitudeDeg, input_geo.altitude,
             lat0_val, lon0_val, 0
         )
 
+
+
         # C++ API (Test)
-        res_geo = lib.NedToGeo(ctypes.byref(c_lat0), ctypes.byref(c_lon0), ctypes.byref(input_ned))
+        res_ned = lib.GeoToNed(ctypes.byref(c_lat0), ctypes.byref(c_lon0), ctypes.byref(input_geo))
 
         # Check Errors
-        diff_lat = abs(res_geo.latitudeDeg - pm_lat)
-        diff_lon = abs(res_geo.longitudeDeg - pm_lon)
-        diff_alt = abs(res_geo.altitude - pm_alt)
+        diff_n = abs(res_ned.north - pm_n)
+        diff_e = abs(res_ned.east - pm_e)
+        diff_d = abs(res_ned.down - pm_d)
+        total_err = math.sqrt(diff_n ** 2 + diff_e ** 2 + diff_d ** 2)
 
-        max_error_geo = max(max_error_geo, diff_lat, diff_lon, diff_alt)
+        max_error_ned = max(max_error_ned, total_err)
 
-        if diff_lat > TOLERANCE_DEG or diff_lon > TOLERANCE_DEG or diff_alt > TOLERANCE_DEG:
-            print(f"[FAIL] NedToGeo Iteration {i}")
-            print(f"  Input NED: {input_ned.north}, {input_ned.east}, {input_ned.down}")
-            print(f"  PyMap3d: {pm_lat:.6f}, {pm_lon:.6f}, {pm_alt:.6f}")
-            print(f"  Cpp    : {res_geo.latitudeDeg:.6f}, {res_geo.longitudeDeg:.6f}, {res_geo.altitude:.6f}")
+        if total_err > TOLERANCE_POS_M:
+            print(f"[FAIL] GeoToNed Iteration {i}")
+            print(f"  Input: {input_geo.latitudeDeg}, {input_geo.longitudeDeg}, {input_geo.altitude}")
+            print(f"  PyMap3d: {pm_n:.3f}, {pm_e:.3f}, {pm_d:.3f}")
+            print(f"  Cpp    : {res_ned.north:.3f}, {res_ned.east:.3f}, {res_ned.down:.3f}")
             failed_count += 1
+
+        # # -------------------------------------------------
+        # # TEST 2: NED -> Geo
+        # # -------------------------------------------------
+        # input_ned = get_random_ned()
+        #
+        # # Pymap3d (Truth)
+        # pm_lat, pm_lon, pm_alt = pm.ned2geodetic(
+        #     input_ned.north, input_ned.east, input_ned.down,
+        #     lat0_val, lon0_val, 0
+        # )
+        #
+        # # C++ API (Test)
+        # res_geo = lib.NedToGeo(ctypes.byref(c_lat0), ctypes.byref(c_lon0), ctypes.byref(input_ned))
+        #
+        # # Check Errors
+        # diff_lat = abs(res_geo.latitudeDeg - pm_lat)
+        # diff_lon = abs(res_geo.longitudeDeg - pm_lon)
+        # diff_alt = abs(res_geo.altitude - pm_alt)
+        #
+        # max_error_geo = max(max_error_geo, diff_lat, diff_lon, diff_alt)
+        #
+        # if diff_lat > TOLERANCE_DEG or diff_lon > TOLERANCE_DEG or diff_alt > TOLERANCE_DEG:
+        #     print(f"[FAIL] NedToGeo Iteration {i}")
+        #     print(f"  Input NED: {input_ned.north}, {input_ned.east}, {input_ned.down}")
+        #     print(f"  PyMap3d: {pm_lat:.6f}, {pm_lon:.6f}, {pm_alt:.6f}")
+        #     print(f"  Cpp    : {res_geo.latitudeDeg:.6f}, {res_geo.longitudeDeg:.6f}, {res_geo.altitude:.6f}")
+        #     failed_count += 1
 
     # --- Summary ---
     print("-" * 40)

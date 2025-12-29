@@ -56,6 +56,8 @@ def test_geo_to_ned():
         lat0, lon0, 0  # Assuming your API assumes origin is at 0 altitude or specific logic
     )
 
+    ecef_x, ecef_y, ecef_z = pm.geodetic2ecef(target_geo.latitudeDeg, target_geo.longitudeDeg, target_geo.altitude)
+
     # B. Call C++ API
     c_lat0 = ctypes.c_double(lat0)
     c_lon0 = ctypes.c_double(lon0)
@@ -66,6 +68,7 @@ def test_geo_to_ned():
 
     # C. Compare
     print(f"Input Geo: {target_geo}")
+    print(f"PyMap3D ecef : X={ecef_x:.6f}, Y={ecef_y:.6f}, Z={ecef_z:.6f}")
     print(f"PyMap3D : N={expected_n:.4f}, E={expected_e:.4f}, D={expected_d:.4f}")
     print(f"C++ API : N={result_ned.north:.4f}, E={result_ned.east:.4f}, D={result_ned.down:.4f}")
 

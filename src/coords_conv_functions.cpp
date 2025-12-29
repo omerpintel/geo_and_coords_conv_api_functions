@@ -183,15 +183,18 @@ SPointECEF NedToEcef(const double* latitudeRad, const double* longitudeRad, cons
     MulMatVec3(tempMat, nedVec, ecefVec);
 
     double RN = WGS84::RN(localLatitude);
+    SPointGeo originInGeo = { localLatitude * 180.0 / PI, localLongitude * 180.0 / PI, 0.0 };
+    SPointECEF originInEcef = GeoToEcef(&originInGeo);
     SPointECEF ecef;
 
-    // ------- CHECK !! DEFFERENT FROM ORIGINAL ALGO --------
-    ecef.x = RN * cosLat * cosLong + ecefVec[0];
-    ecef.y = RN * cosLat * sinLong + ecefVec[1];
-    ecef.z = RN * (1 - WGS84::E2) * sinLat + ecefVec[2];
-    //ecef.x = ecefVec[0];
-    //ecef.y = ecefVec[1];
-    //ecef.z = ecefVec[2];
+    ////// ------- CHECK !! DEFFERENT FROM ORIGINAL ALGO --------
+    //double temp_ecef_x = RN * cosLat * cosLong + ecefVec[0];
+    //double temp_ecef_y = RN * cosLat * sinLong + ecefVec[1];
+    //double temp_ecef_z = RN * (1 - WGS84::E2) * sinLat + ecefVec[2];
+
+    ecef.x = ecefVec[0] + originInEcef.x;
+    ecef.y = ecefVec[1] + originInEcef.y;
+    ecef.z = ecefVec[2] + originInEcef.z;
 
     return ecef;
 }
