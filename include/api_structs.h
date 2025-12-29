@@ -5,7 +5,7 @@
 struct SPointGeo {
 	double latitudeDeg; // deg
 	double longitudeDeg; // deg
-	float altitude; // m
+	double altitude; // m
 };
 
 struct SPointECEF {

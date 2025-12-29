@@ -177,7 +177,7 @@ SPointNED GeoToNed(const double* originLatitudeDeg, const double* originLongitud
     double longitudeRad = *originLongitudeDeg * PI / 180.0;
 
     SPointECEF pointEcef = GeoToEcef(geoPoint);
-    SPointNED pointNed = EcefToNed(&latitudeRad, &latitudeRad, &pointEcef);
+    SPointNED pointNed = EcefToNed(&latitudeRad, &longitudeRad, &pointEcef);
 
     return pointNed;
 }

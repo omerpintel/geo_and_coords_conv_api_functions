@@ -138,13 +138,13 @@ int main() {
     RunTest_NedToGeo("N2G: North 1 deg",
         0.0, 0.0,
         { DEG_LAT_M, 0.0, 0.0 },
-        { 1.0, 0.0, 0.0f }
+        { 1, 0.0, 977.92 }
     );
 
     RunTest_NedToGeo("N2G: East 1 deg",
         0.0, 0.0,
         { 0.0, DEG_LAT_M, 0.0 },
-        { 0.0, 1.0, 0.0f }
+        { 0.0, 1.0, 971.37 }
     );
 
     // --- Section 2: Geo to NED ---

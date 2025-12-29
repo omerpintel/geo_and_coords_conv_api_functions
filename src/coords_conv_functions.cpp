@@ -169,23 +169,29 @@ SPointECEF NedToEcef(const double* latitudeRad, const double* longitudeRad, cons
 
     double tempMat[3][3];
     tempMat[0][0] = -sinLat * cosLong;
-    tempMat[0][1] = -sinLat * sinLong;
-    tempMat[0][2] = cosLat;
-    tempMat[1][0] = -sinLong;
+    tempMat[1][0] = -sinLat * sinLong;
+    tempMat[2][0] = cosLat;
+    tempMat[0][1] = -sinLong;
     tempMat[1][1] = cosLong;
-    tempMat[1][2] = 0.0;
-    tempMat[2][0] = -cosLat * cosLong;
-    tempMat[2][1] = -cosLat * sinLong;
+    tempMat[2][1] = 0.0;
+    tempMat[0][2] = -cosLat * cosLong;
+    tempMat[1][2] = -cosLat * sinLong;
     tempMat[2][2] = -sinLat;
 
     double nedVec[3] = { nedPoint->north, nedPoint->east, nedPoint->down };
     double ecefVec[3];
     MulMatVec3(tempMat, nedVec, ecefVec);
 
+    double RN = WGS84::RN(localLatitude);
     SPointECEF ecef;
-    ecef.x = ecefVec[0];
-    ecef.y = ecefVec[1];
-    ecef.z = ecefVec[2];
+
+    // ------- CHECK !! DEFFERENT FROM ORIGINAL ALGO --------
+    ecef.x = RN * cosLat * cosLong + ecefVec[0];
+    ecef.y = RN * cosLat * sinLong + ecefVec[1];
+    ecef.z = RN * (1 - WGS84::E2) * sinLat + ecefVec[2];
+    //ecef.x = ecefVec[0];
+    //ecef.y = ecefVec[1];
+    //ecef.z = ecefVec[2];
 
     return ecef;
 }
