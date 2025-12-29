@@ -70,4 +70,15 @@ extern "C" {
 		EResultState* resultState
 	);
 
+	API_FUNCTIONS SPointNED GeoToNed(
+		const double* originLatitudeDeg,
+		const double* originLongitudeDeg,
+		const SPointGeo* geoPoint
+	);
+
+	API_FUNCTIONS SPointGeo NedToGeo(
+		const double* originLatitudeDeg, 
+		const double* originLongitudeDeg, 
+		const SPointNED* nedPoint
+	);
 }

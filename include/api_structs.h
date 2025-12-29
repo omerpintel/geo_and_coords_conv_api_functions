@@ -3,8 +3,8 @@
 #pragma pack(push,1)
 
 struct SPointGeo {
-	double latitude; // rad
-	double longitude; // rad
+	double latitudeDeg; // deg
+	double longitudeDeg; // deg
 	float altitude; // m
 };
 

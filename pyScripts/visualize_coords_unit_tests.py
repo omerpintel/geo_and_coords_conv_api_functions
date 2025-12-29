@@ -5,10 +5,10 @@ import webbrowser
 import math
 
 # --- Configuration ---
-LOG_FILE_PATH = r"C:\Users\OMERPI\Desktop\GeoPointProject\out\build\x64-Debug\bin\test_results_wgs84.log"
+LOG_FILE_PATH = r"C:\Users\OMERPI\Desktop\GeoPointProject\out\build\x64-Debug\bin\test_results_ned_geo.log"
 # ---------------------
 
-WGS84_A = 6378137.0
+METERS_PER_DEG_LAT = 111319.9
 
 
 def parse_vec3(str_val):
@@ -19,7 +19,7 @@ def parse_vec3(str_val):
         return (0.0, 0.0, 0.0)
 
 
-def plot_wgs84_tests(logfile):
+def plot_ned_geo_tests(logfile):
     if not os.path.exists(logfile):
         print(f"Error: Log file not found at: {logfile}")
         return
@@ -27,109 +27,162 @@ def plot_wgs84_tests(logfile):
     with open(logfile, "r") as f:
         lines = [l.strip() for l in f.readlines() if l.strip()]
 
-    valid_data = []
+    # Data Containers
+    traces_pass = {'lat': [], 'lon': [], 'text': []}
+    traces_fail = {'lat': [], 'lon': [], 'text': []}
 
-    for i, line in enumerate(lines):
+    # For Mapbox lines, we need a list of independent line segments
+    # Mapbox traces don't support "breaking" lines with None easily in all versions,
+    # but creating a single trace with None separators usually works for visual gaps.
+    line_lats = []
+    line_lons = []
+
+    table_data = []
+    all_lats = []
+    all_lons = []
+
+    for line in lines:
         parts = line.split("|")
         if len(parts) < 6: continue
 
-        name = parts[0]
-        test_type = parts[1]  # 'wgs84_conv' or 'wgs84_inv'
-
+        name, test_type = parts[0], parts[1]
         vec_in = parse_vec3(parts[2])
         vec_exp = parse_vec3(parts[3])
         vec_act = parse_vec3(parts[4])
-        passed_flag = (parts[5] == "1")
+        passed = (parts[5] == "1")
 
-        # logic specific to test type
         error_m = 0.0
-        plot_lat_deg = 0.0
-        plot_lon_deg = 0.0
+        plot_lat = 0.0
+        plot_lon = 0.0
+        hover_detail = ""
 
-        if test_type == "wgs84_conv":
-            # Input: Geo, Output: ECEF
-            # Error is simple Euclidean distance in meters
-            dx = vec_act[0] - vec_exp[0]
-            dy = vec_act[1] - vec_exp[1]
-            dz = vec_act[2] - vec_exp[2]
-            error_m = math.sqrt(dx * dx + dy * dy + dz * dz)
+        # --- Logic ---
+        if test_type == "geo_to_ned":
+            plot_lat, plot_lon = vec_in[0], vec_in[1]
+            dn = vec_act[0] - vec_exp[0]
+            de = vec_act[1] - vec_exp[1]
+            dd = vec_act[2] - vec_exp[2]
+            error_m = math.sqrt(dn ** 2 + de ** 2 + dd ** 2)
 
-            # For mapping
-            plot_lat_deg = math.degrees(vec_in[0])
-            plot_lon_deg = math.degrees(vec_in[1])
+            hover_detail = (f"<b>{name}</b><br>Type: Geo->NED<br>Err: {error_m:.3f}m")
 
-        elif test_type == "wgs84_inv":
-            # Input: ECEF, Output: Geo
-            # Error is in Radians/Meters. We approximate to Meters for the graph.
-            dLat_rad = vec_act[0] - vec_exp[0]
-            dLon_rad = vec_act[1] - vec_exp[1]
+        elif test_type == "ned_to_geo":
+            plot_lat, plot_lon = vec_exp[0], vec_exp[1]
+            dLat_deg = vec_act[0] - vec_exp[0]
+            dLon_deg = vec_act[1] - vec_exp[1]
             dAlt_m = vec_act[2] - vec_exp[2]
 
-            # Approx meters per radian (at equator roughly)
-            lat_err_m = dLat_rad * WGS84_A
-            lon_err_m = dLon_rad * WGS84_A * math.cos(vec_exp[0])
-
+            lat_err_m = dLat_deg * METERS_PER_DEG_LAT
+            lon_err_m = dLon_deg * METERS_PER_DEG_LAT * math.cos(math.radians(plot_lat))
             error_m = math.sqrt(lat_err_m ** 2 + lon_err_m ** 2 + dAlt_m ** 2)
 
-            # For mapping (Output is Geo, so use Expected Geo)
-            plot_lat_deg = math.degrees(vec_exp[0])
-            plot_lon_deg = math.degrees(vec_exp[1])
+            hover_detail = (f"<b>{name}</b><br>Type: NED->Geo<br>Err: {error_m:.3f}m<br>"
+                            f"Act Lat: {vec_act[0]:.7f}<br>Act Lon: {vec_act[1]:.7f}")
 
-        valid_data.append({
-            "name": name,
-            "type": test_type,
-            "geo_lat": plot_lat_deg,
-            "geo_lon": plot_lon_deg,
-            "passed": passed_flag,
-            "error": error_m
-        })
+            # Add error line for failed tests
+            if not passed:
+                line_lats.extend([vec_exp[0], vec_act[0], None])
+                line_lons.extend([vec_exp[1], vec_act[1], None])
 
-    if not valid_data:
+        # --- Storage ---
+        all_lats.append(plot_lat)
+        all_lons.append(plot_lon)
+        table_data.append({'name': name, 'type': test_type, 'error': error_m, 'passed': passed})
+
+        if passed:
+            traces_pass['lat'].append(plot_lat)
+            traces_pass['lon'].append(plot_lon)
+            traces_pass['text'].append(hover_detail)
+        else:
+            traces_fail['lat'].append(plot_lat)
+            traces_fail['lon'].append(plot_lon)
+            traces_fail['text'].append(hover_detail)
+
+    if not table_data:
         print("No valid data found.")
         return
 
-    # --- Plotting ---
+    # --- Calculate Map Center ---
+    center_lat = sum(all_lats) / len(all_lats) if all_lats else 0
+    center_lon = sum(all_lons) / len(all_lons) if all_lons else 0
+
+    # --- Plot Construction ---
     fig = make_subplots(
-        rows=3, cols=1,
-        row_heights=[0.3, 0.3, 0.4],
-        specs=[[{"type": "table"}], [{"type": "xy"}], [{"type": "geo"}]],
-        subplot_titles=("Test Results Table", "Approx. Position Error (Meters)", "Test Coverage Map")
+        rows=2, cols=2,
+        column_widths=[0.6, 0.4],
+        row_heights=[0.3, 0.7],
+        specs=[[{"type": "xy"}, {"type": "table", "rowspan": 2}],
+               [{"type": "mapbox", "colspan": 1}, None]],  # Changed "geo" to "mapbox"
+        subplot_titles=("Error Magnitude", "Test Log", "Interactive Map (Scroll to Zoom)")
     )
 
-    # 1. Table
-    t_names = [d['name'] for d in valid_data]
-    t_type = [d['type'] for d in valid_data]
-    t_status = ["✅ PASS" if d['passed'] else "❌ FAIL" for d in valid_data]
-    t_err = [f"{d['error']:.6f}" for d in valid_data]
-
-    fig.add_trace(go.Table(
-        header=dict(values=['Test Name', 'Type', 'Error (m)', 'Status'],
-                    fill_color='paleturquoise', align='left'),
-        cells=dict(values=[t_names, t_type, t_err, t_status],
-                   fill_color='lavender', align='left')
+    # 1. Bar Chart
+    fig.add_trace(go.Bar(
+        x=[d['name'] for d in table_data],
+        y=[d['error'] for d in table_data],
+        marker_color=['#10B981' if d['passed'] else '#EF4444' for d in table_data],
+        name="Error (m)"
     ), row=1, col=1)
 
-    # 2. Bar Chart
-    colors = ['#10B981' if d['passed'] else '#EF4444' for d in valid_data]
-    fig.add_trace(go.Bar(x=t_names, y=[d['error'] for d in valid_data], marker_color=colors, name="Error (m)"), row=2,
-                  col=1)
+    # 2. Table
+    fig.add_trace(go.Table(
+        header=dict(values=['Test', 'Err (m)', 'Status'],
+                    fill_color='#374151', font=dict(color='white'), align='left'),
+        cells=dict(values=[
+            [d['name'] for d in table_data],
+            [f"{d['error']:.4f}" for d in table_data],
+            ["✅" if d['passed'] else "❌" for d in table_data]
+        ], fill_color='whitesmoke', align='left')
+    ), row=1, col=2)
 
-    # 3. Globe
-    fig.add_trace(go.Scattergeo(
-        lon=[d['geo_lon'] for d in valid_data],
-        lat=[d['geo_lat'] for d in valid_data],
+    # 3. Mapbox Traces
+    # Passed
+    fig.add_trace(go.Scattermapbox(
+        lat=traces_pass['lat'], lon=traces_pass['lon'],
         mode='markers',
-        marker=dict(size=8, color=colors),
-        text=t_names, name="Locations"
-    ), row=3, col=1)
+        marker=dict(size=12, color='#10B981'),
+        text=traces_pass['text'], hoverinfo='text',
+        name="Passed"
+    ), row=2, col=1)
 
-    fig.update_layout(height=1000, title_text="WGS84 Round-Trip Test Report", showlegend=False)
+    # Failed
+    fig.add_trace(go.Scattermapbox(
+        lat=traces_fail['lat'], lon=traces_fail['lon'],
+        mode='markers',
+        marker=dict(size=14, color='#EF4444'),
+        text=traces_fail['text'], hoverinfo='text',
+        name="Failed"
+    ), row=2, col=1)
 
-    output_path = "wgs84_full_report.html"
+    # Error Lines
+    if line_lats:
+        fig.add_trace(go.Scattermapbox(
+            lat=line_lats, lon=line_lons,
+            mode='lines',
+            line=dict(width=2, color='red'),
+            hoverinfo='skip',
+            name="Error Offset"
+        ), row=2, col=1)
+
+    # --- Mapbox Layout ---
+    fig.update_layout(
+        height=900,
+        title_text="Dynamic NED Debug Report",
+        mapbox=dict(
+            style="open-street-map",  # Full street detail, no key needed
+            center=dict(lat=center_lat, lon=center_lon),
+            zoom=2,  # Start zoomed out, user can zoom in infinitely
+            domain={'x': [0, 0.6], 'y': [0, 0.65]}  # Manually position map in bottom-left
+        ),
+        legend=dict(orientation="h", y=1.02, x=0),
+        margin=dict(l=10, r=10, t=50, b=10)
+    )
+
+    output_path = "dynamic_map_report.html"
     fig.write_html(output_path)
-    print(f"Report generated: {output_path}")
+    print(f"Generated: {os.path.realpath(output_path)}")
     webbrowser.open('file://' + os.path.realpath(output_path))
 
 
 if __name__ == "__main__":
-    plot_wgs84_tests(LOG_FILE_PATH)
+    plot_ned_geo_tests(LOG_FILE_PATH)

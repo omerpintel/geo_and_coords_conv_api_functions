@@ -51,29 +51,29 @@ void MulMatVec3(const double A[3][3], const double VIn[3], double VOut[3])
 
 SPointECEF GeoToEcef(const SPointGeo* geoPoint)
 {
-    double latitude, longitude, altitude;
+    double latitudeRad, longitudeRad, altitude;
     double rn, rn_plus_h_cos_lat;
 
     const double oneMinusE2 = 1 - WGS84::E2;
 
     // Latitude is valid in [-pi/2, pi/2]
-    latitude = geoPoint->latitude;
+    latitudeRad = geoPoint->latitudeDeg * PI / 180.0;
 
     // Longitude is valid in [-pi, pi]
-    longitude = geoPoint->longitude;
+    longitudeRad = geoPoint->longitudeDeg * PI / 180.0;
 
     altitude = geoPoint->altitude;
 
     // Normal (east/west) prime vertical curvature radii (m)
-    rn = WGS84::RN(latitude);
+    rn = WGS84::RN(latitudeRad);
 
-    rn_plus_h_cos_lat = ((rn + altitude) * std::cos(latitude));
+    rn_plus_h_cos_lat = (rn + altitude) * std::cos(latitudeRad);
 
     // ECEF (m) position coordinates
     SPointECEF ecef;
-    ecef.x = rn_plus_h_cos_lat * std::cos(longitude);
-    ecef.y = rn_plus_h_cos_lat * std::sin(longitude);
-    ecef.z = (oneMinusE2 * rn + altitude) * std::sin(latitude);
+    ecef.x = rn_plus_h_cos_lat * std::cos(longitudeRad);
+    ecef.y = rn_plus_h_cos_lat * std::sin(longitudeRad);
+    ecef.z = (oneMinusE2 * rn + altitude) * std::sin(latitudeRad);
 
     return ecef;
 }
@@ -90,8 +90,8 @@ SPointGeo EcefToGeo(const SPointECEF* ecefPoint)
     y = ecefPoint->y;
     z = ecefPoint->z;
 
-    SPointGeo geo;
-    geo.longitude = std::atan2(y, x);
+    double longitudeRad, latitudeRad, altitude;
+    longitudeRad = std::atan2(y, x);
 
     double normXPosYPos = API_UTILS::safe_sqrt((y * y + x * x), 1.0);
     double inv1 = API_UTILS::safe_div(1.0, (normXPosYPos * sqrtOneMinusE2), 1.0);
@@ -99,31 +99,36 @@ SPointGeo EcefToGeo(const SPointECEF* ecefPoint)
     double tmp2 = z + WGS84::E2 * invOneMinusE2 * EARTH_CONSTS::R0 * sqrtOneMinusE2 * std::sin(u) * std::sin(u) * std::sin(u);
     double den = normXPosYPos - WGS84::E2 * EARTH_CONSTS::R0 * std::cos(u) * std::cos(u) * std::cos(u);
     double invDen = API_UTILS::safe_div(1.0, den, 1.0);
-    geo.latitude = std::atan(tmp2 * invDen);
-    double sinlat = std::sin(geo.latitude);
+    latitudeRad = std::atan(tmp2 * invDen);
+    double sinlat = std::sin(latitudeRad);
     double sinlat2 = sinlat * sinlat;
-    double coslat = std::cos(geo.latitude);
+    double coslat = std::cos(latitudeRad);
     double inv2;
 
     if (sinlat2 <= 0.5)
     {
         inv2 = API_UTILS::safe_div(1.0, (API_UTILS::safe_sqrt((1.0 - WGS84::E2 * sinlat2), 1.0) * coslat), 1.0);
-        geo.altitude = (normXPosYPos * API_UTILS::safe_sqrt((1.0 - WGS84::E2 * sinlat2), 1.0) - EARTH_CONSTS::R0 * coslat) * inv2;
+        altitude = (normXPosYPos * API_UTILS::safe_sqrt((1.0 - WGS84::E2 * sinlat2), 1.0) - EARTH_CONSTS::R0 * coslat) * inv2;
     }
     else
     {
         inv2 = API_UTILS::safe_div(1.0, (API_UTILS::safe_sqrt((1.0 - WGS84::E2 * sinlat2), 1.0) * sinlat), 1.0);
-        geo.altitude = (z * API_UTILS::safe_sqrt((1.0 - WGS84::E2 * sinlat2), 1.0) - EARTH_CONSTS::R0 * oneMinusE2 * sinlat) * inv2;
+        altitude = (z * API_UTILS::safe_sqrt((1.0 - WGS84::E2 * sinlat2), 1.0) - EARTH_CONSTS::R0 * oneMinusE2 * sinlat) * inv2;
     }
+
+    SPointGeo geo;
+    geo.latitudeDeg = latitudeRad * 180.0 / PI;
+    geo.longitudeDeg = longitudeRad * 180.0 / PI;
+    geo.altitude = altitude;
 
     return geo;
 }
 
 
-SPointNED EcefToNed(const double* latitude, const double* longitude, const SPointECEF* ecefPoint)
+SPointNED EcefToNed(const double* latitudeRad, const double* longitudeRad, const SPointECEF* ecefPoint)
 {
-    double localLatitude = NavValidateLatitude(*latitude);
-    double localLongitude = NavValidateLongitude(*longitude);
+    double localLatitude = NavValidateLatitude(*latitudeRad);
+    double localLongitude = NavValidateLongitude(*longitudeRad);
     double sinLat = std::sin(localLatitude);
     double cosLat = std::cos(localLatitude);
     double sinLong = std::sin(localLongitude);
@@ -150,4 +155,37 @@ SPointNED EcefToNed(const double* latitude, const double* longitude, const SPoin
     ned.down = nedVec[2];
 
     return ned;
+}
+
+
+SPointECEF NedToEcef(const double* latitudeRad, const double* longitudeRad, const SPointNED* nedPoint)
+{
+    double localLatitude = NavValidateLatitude(*latitudeRad);
+    double localLongitude = NavValidateLongitude(*longitudeRad);
+    double sinLat = std::sin(localLatitude);
+    double cosLat = std::cos(localLatitude);
+    double sinLong = std::sin(localLongitude);
+    double cosLong = std::cos(localLongitude);
+
+    double tempMat[3][3];
+    tempMat[0][0] = -sinLat * cosLong;
+    tempMat[0][1] = -sinLat * sinLong;
+    tempMat[0][2] = cosLat;
+    tempMat[1][0] = -sinLong;
+    tempMat[1][1] = cosLong;
+    tempMat[1][2] = 0.0;
+    tempMat[2][0] = -cosLat * cosLong;
+    tempMat[2][1] = -cosLat * sinLong;
+    tempMat[2][2] = -sinLat;
+
+    double nedVec[3] = { nedPoint->north, nedPoint->east, nedPoint->down };
+    double ecefVec[3];
+    MulMatVec3(tempMat, nedVec, ecefVec);
+
+    SPointECEF ecef;
+    ecef.x = ecefVec[0];
+    ecef.y = ecefVec[1];
+    ecef.z = ecefVec[2];
+
+    return ecef;
 }
