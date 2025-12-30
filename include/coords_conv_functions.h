@@ -17,6 +17,6 @@ SPointECEF GeoToEcef(const SPointGeo* geoPoint);
 
 SPointGeo EcefToGeo(const SPointECEF* ecefPoint);
 
-SPointNED EcefToNed(const double* latitudeRad, const double* longitudeRad, const SPointECEF* ecefPoint);
+SPointNED EcefToNed(const double* latitudeRad, const double* longitudeRad, const double* altitude, const SPointECEF* ecefPoint);
 
-SPointECEF NedToEcef(const double* latitudeRad, const double* longitudeRad, const SPointNED* nedPoint);
+SPointECEF NedToEcef(const double* latitudeRad, const double* longitudeRad, const double* altitude, const SPointNED* nedPoint);

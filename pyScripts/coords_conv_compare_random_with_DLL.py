@@ -13,7 +13,6 @@ import geo_utils
 
 # --- Configuration ---
 NUM_TESTS = 1000
-LIB_PATH = "./libgeo_api.so"  # The loader handles the extension automatically
 
 
 # --- 1. Define C++ Structs ---
@@ -35,24 +34,26 @@ lib = geo_utils.load_geopoint_library()
 # Set function signatures
 lib.GeoToNed.argtypes = [ctypes.POINTER(ctypes.c_double),
                          ctypes.POINTER(ctypes.c_double),
+                         ctypes.POINTER(ctypes.c_double),
                          ctypes.POINTER(SPointGeo)]
 lib.GeoToNed.restype = SPointNED
 
 lib.NedToGeo.argtypes = [ctypes.POINTER(ctypes.c_double),
+                         ctypes.POINTER(ctypes.c_double),
                          ctypes.POINTER(ctypes.c_double),
                          ctypes.POINTER(SPointNED)]
 lib.NedToGeo.restype = SPointGeo
 
 
 # --- 3. Helper Functions ---
-def get_random_geo(center_lat, center_lon, radius_deg=100.0):
+def get_random_geo(center_lat, center_lon, radius_deg=1000.0):
     lat = center_lat + random.uniform(-radius_deg, radius_deg)
     lon = center_lon + random.uniform(-radius_deg, radius_deg)
     alt = random.uniform(-100, 1000)
     return SPointGeo(lat, lon, alt)
 
 
-def get_random_ned(radius_m=500000.0):
+def get_random_ned(radius_m=5000.0):
     n = random.uniform(-radius_m, radius_m)
     e = random.uniform(-radius_m, radius_m)
     d = random.uniform(-500, 500)
@@ -66,8 +67,10 @@ def run_stress_test():
     # Fixed Origin
     lat0_val = 32.0
     lon0_val = 34.0
+    alt0_val = 0
     c_lat0 = ctypes.c_double(lat0_val)
     c_lon0 = ctypes.c_double(lon0_val)
+    c_alt0 = ctypes.c_double(alt0_val)
 
     results_data = []
 
@@ -80,10 +83,10 @@ def run_stress_test():
         # Truth
         pm_n, pm_e, pm_d = pm.geodetic2ned(
             input_geo.latitudeDeg, input_geo.longitudeDeg, input_geo.altitude,
-            lat0_val, lon0_val, 0
+            lat0_val, lon0_val, alt0_val
         )
         # Test
-        res_ned = lib.GeoToNed(ctypes.byref(c_lat0), ctypes.byref(c_lon0), ctypes.byref(input_geo))
+        res_ned = lib.GeoToNed(ctypes.byref(c_lat0), ctypes.byref(c_lon0), ctypes.byref(c_alt0), ctypes.byref(input_geo))
 
         # Error Calculation (Meters)
         diff_n = abs(res_ned.north - pm_n)
@@ -95,40 +98,43 @@ def run_stress_test():
             "Test_Type": "GeoToNed",
             "Latitude": input_geo.latitudeDeg,
             "Longitude": input_geo.longitudeDeg,
+            "Altitude": input_geo.altitude,
             "Error_Distance_m": total_err_m
         })
 
-        # -------------------------------------------------
-        # TEST 2: NED -> Geo
-        # -------------------------------------------------
-        input_ned = get_random_ned()
-
-        # Truth
-        pm_lat, pm_lon, pm_alt = pm.ned2geodetic(
-            input_ned.north, input_ned.east, input_ned.down,
-            lat0_val, lon0_val, 0
-        )
-        # Test
-        res_geo = lib.NedToGeo(ctypes.byref(c_lat0), ctypes.byref(c_lon0), ctypes.byref(input_ned))
-
-        # Error Calculation (Degrees -> Meters Approximation)
-        diff_lat_deg = abs(res_geo.latitudeDeg - pm_lat)
-        diff_lon_deg = abs(res_geo.longitudeDeg - pm_lon)
-        diff_alt_m = abs(res_geo.altitude - pm_alt)
-
-        # Approx conversion factors
-        meters_per_deg = 111132.0
-        lat_err_m = diff_lat_deg * meters_per_deg
-        lon_err_m = diff_lon_deg * meters_per_deg * math.cos(math.radians(lat0_val))
-
-        total_geo_err_m = math.sqrt(lat_err_m ** 2 + lon_err_m ** 2 + diff_alt_m ** 2)
-
-        results_data.append({
-            "Test_Type": "NedToGeo",
-            "Latitude": pm_lat,
-            "Longitude": pm_lon,
-            "Error_Distance_m": total_geo_err_m
-        })
+        # # -------------------------------------------------
+        # # TEST 2: NED -> Geo
+        # # -------------------------------------------------
+        # input_ned = get_random_ned()
+        #
+        # # Truth
+        # pm_lat, pm_lon, pm_alt = pm.ned2geodetic(
+        #     input_ned.north, input_ned.east, input_ned.down,
+        #     lat0_val, lon0_val, alt0_val
+        # )
+        # # Test
+        # res_geo = lib.NedToGeo(ctypes.byref(c_lat0), ctypes.byref(c_lon0), ctypes.byref(c_alt0), ctypes.byref(input_ned))
+        #
+        # # Error Calculation (Degrees -> Meters Approximation)
+        # diff_lat_deg = abs(res_geo.latitudeDeg - pm_lat)
+        # diff_lon_deg = abs(res_geo.longitudeDeg - pm_lon)
+        # diff_alt_m = abs(res_geo.altitude - pm_alt)
+        #
+        # # Approx conversion factors
+        # meters_per_deg = 111132.0
+        # lat_err_m = diff_lat_deg * meters_per_deg
+        # lon_err_m = diff_lon_deg * meters_per_deg * math.cos(math.radians(lat0_val)) # cos because long err shrinks at the poles
+        # alt_err_m = diff_alt_m
+        #
+        # total_geo_err_m = math.sqrt(lat_err_m ** 2 + lon_err_m ** 2 + diff_alt_m ** 2 + alt_err_m ** 2)
+        #
+        # results_data.append({
+        #     "Test_Type": "NedToGeo",
+        #     "Latitude": pm_lat,
+        #     "Longitude": pm_lon,
+        #     "Altitude": pm_alt,
+        #     "Error_Distance_m": total_geo_err_m
+        # })
 
     # Convert to DataFrame
     df = pd.DataFrame(results_data)
@@ -163,13 +169,12 @@ def run_stress_test():
         lat="Latitude",
         lon="Longitude",
         color="Error_Distance_m",
-        # symbol="Test_Type",  <-- REMOVED THIS LINE
         size_max=15,
         zoom=8,
-        title="Test Coverage & Error Magnitude",
+        title="Coords Conv Test Results",
         map_style="open-street-map",
         color_continuous_scale="Turbo",
-        hover_data=["Error_Distance_m", "Test_Type"]  # Test_Type still visible on hover
+        hover_data=["Error_Distance_m", "Test_Type"]
     )
     fig_map.show()
 

@@ -3,7 +3,6 @@
 #include "no_heap.h"
 #include "cov_spy.h"
 
-
 #include <cstddef>   // for nullptr
 
 #if defined(_DEBUG) || !defined(NDEBUG)
@@ -171,24 +170,24 @@ void doesLineIntersectPolygon(const Point* polygon, uint16_t pointCount, const P
 }
 
 
-SPointNED GeoToNed(const double* originLatitudeDeg, const double* originLongitudeDeg, const SPointGeo* geoPoint)
+SPointNED GeoToNed(const double* originLatitudeDeg, const double* originLongitudeDeg, const double* originAltitude, const SPointGeo* geoPoint)
 {
     double latitudeRad = *originLatitudeDeg * PI / 180.0;
     double longitudeRad = *originLongitudeDeg * PI / 180.0;
 
     SPointECEF pointEcef = GeoToEcef(geoPoint);
-    SPointNED pointNed = EcefToNed(&latitudeRad, &longitudeRad, &pointEcef);
+    SPointNED pointNed = EcefToNed(&latitudeRad, &longitudeRad, originAltitude, &pointEcef);
 
     return pointNed;
 }
 
 
-SPointGeo NedToGeo(const double* originLatitudeDeg, const double* originLongitudeDeg, const SPointNED* nedPoint)
+SPointGeo NedToGeo(const double* originLatitudeDeg, const double* originLongitudeDeg, const double* originAltitude, const SPointNED* nedPoint)
 {
     double latitudeRad = *originLatitudeDeg *  PI / 180.0;;
     double longitudeRad = *originLongitudeDeg * PI / 180.0;
 
-    SPointECEF pointEcef = NedToEcef(&latitudeRad, &longitudeRad, nedPoint);
+    SPointECEF pointEcef = NedToEcef(&latitudeRad, &longitudeRad, originAltitude, nedPoint);
     SPointGeo pointGeo = EcefToGeo(&pointEcef);
 
     return pointGeo;

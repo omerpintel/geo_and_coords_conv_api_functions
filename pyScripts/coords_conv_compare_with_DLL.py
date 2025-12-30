@@ -28,10 +28,12 @@ lib = geo_utils.load_geopoint_library()
 
 lib.GeoToNed.argtypes = [ctypes.POINTER(ctypes.c_double),
                          ctypes.POINTER(ctypes.c_double),
+                         ctypes.POINTER(ctypes.c_double),
                          ctypes.POINTER(SPointGeo)]
 lib.GeoToNed.restype = SPointNED
 # -----------------------
 lib.NedToGeo.argtypes = [ctypes.POINTER(ctypes.c_double),
+                         ctypes.POINTER(ctypes.c_double),
                          ctypes.POINTER(ctypes.c_double),
                          ctypes.POINTER(SPointNED)]
 lib.NedToGeo.restype = SPointGeo
@@ -43,7 +45,7 @@ def test_geo_to_ned():
     # Origin (Reference Point)
     lat0 = 32.0  # degrees
     lon0 = 34.0  # degrees
-    alt0 = 0.0  # meters (pymap3d usually requires an origin altitude)
+    alt0 = 0.0  # meters
 
     # Target Point (Geodetic)
     # A point slightly North-East of origin
@@ -54,7 +56,7 @@ def test_geo_to_ned():
     # We assume your NED origin is at altitude 0 relative to the ellipsoid or matches alt0
     expected_n, expected_e, expected_d = pm.geodetic2ned(
         target_geo.latitudeDeg, target_geo.longitudeDeg, target_geo.altitude,
-        lat0, lon0, 0  # Assuming your API assumes origin is at 0 altitude or specific logic
+        lat0, lon0, alt0
     )
 
     ecef_x, ecef_y, ecef_z = pm.geodetic2ecef(target_geo.latitudeDeg, target_geo.longitudeDeg, target_geo.altitude)
@@ -62,9 +64,11 @@ def test_geo_to_ned():
     # B. Call C++ API
     c_lat0 = ctypes.c_double(lat0)
     c_lon0 = ctypes.c_double(lon0)
+    c_alt0 = ctypes.c_double(alt0)
 
     result_ned = lib.GeoToNed(ctypes.byref(c_lat0),
                               ctypes.byref(c_lon0),
+                              ctypes.byref(c_alt0),
                               ctypes.byref(target_geo))
 
     # C. Compare
@@ -76,6 +80,7 @@ def test_geo_to_ned():
     # Allow small error (e.g. 1cm)
     assert math.isclose(result_ned.north, expected_n, abs_tol=0.01)
     assert math.isclose(result_ned.east, expected_e, abs_tol=0.01)
+    assert math.isclose(result_ned.down, expected_d, abs_tol=0.01)
     print(">> SUCCESS: GeoToNed matches.")
 
 
@@ -85,6 +90,7 @@ def test_ned_to_geo():
     # Origin
     lat0 = 32.0
     lon0 = 34.0
+    alt0 = 0.0
 
     # Target Point (NED) -> 1000m North, 500m East, -50m Down (50m Up)
     target_ned = SPointNED(1000.0, 500.0, -50.0)
@@ -100,9 +106,11 @@ def test_ned_to_geo():
     # B. Call C++ API
     c_lat0 = ctypes.c_double(lat0)
     c_lon0 = ctypes.c_double(lon0)
+    c_alt0 = ctypes.c_double(alt0)
 
     result_geo = lib.NedToGeo(ctypes.byref(c_lat0),
                               ctypes.byref(c_lon0),
+                              ctypes.byref(c_alt0),
                               ctypes.byref(target_ned))
 
     # C. Compare
@@ -115,6 +123,7 @@ def test_ned_to_geo():
     # Allow small error (approx 1e-6 degrees is ~11cm)
     assert math.isclose(result_geo.latitudeDeg, exp_lat, abs_tol=1e-6)
     assert math.isclose(result_geo.longitudeDeg, exp_lon, abs_tol=1e-6)
+    assert math.isclose(result_geo.altitude, exp_alt, abs_tol=1e-6)
     print(">> SUCCESS: NedToGeo matches.")
 
 def get_random_geo(center_lat, center_lon, radius_deg=1.0):
@@ -130,7 +139,7 @@ def test_geo_to_ned_to_geo():
     # Origin (Reference Point)
     lat0 = 32.0  # degrees
     lon0 = 34.0  # degrees
-    alt0 = 0.0  # meters (pymap3d usually requires an origin altitude)
+    alt0 = 50.0  # meters
 
     # Target Point (Geodetic)
     #target_geo = SPointGeo(32.01, 34.01, 50.0)
@@ -140,13 +149,16 @@ def test_geo_to_ned_to_geo():
     # B. Call C++ API
     c_lat0 = ctypes.c_double(lat0)
     c_lon0 = ctypes.c_double(lon0)
+    c_alt0 = ctypes.c_double(alt0)
 
     result_ned = lib.GeoToNed(ctypes.byref(c_lat0),
                               ctypes.byref(c_lon0),
+                              ctypes.byref(c_alt0),
                               ctypes.byref(target_geo))
 
     result_geo = lib.NedToGeo(ctypes.byref(c_lat0),
                               ctypes.byref(c_lon0),
+                              ctypes.byref(c_alt0),
                               ctypes.byref(result_ned))
 
     # C. Compare
@@ -161,6 +173,6 @@ def test_geo_to_ned_to_geo():
 
 
 if __name__ == "__main__":
-    #test_ned_to_geo()
-    #test_geo_to_ned()
+    test_ned_to_geo()
+    test_geo_to_ned()
     test_geo_to_ned_to_geo()

@@ -73,12 +73,14 @@ extern "C" {
 	API_FUNCTIONS SPointNED GeoToNed(
 		const double* originLatitudeDeg,
 		const double* originLongitudeDeg,
+		const double* originAltitude,
 		const SPointGeo* geoPoint
 	);
 
 	API_FUNCTIONS SPointGeo NedToGeo(
 		const double* originLatitudeDeg, 
 		const double* originLongitudeDeg, 
+		const double* originAltitude,
 		const SPointNED* nedPoint
 	);
 }

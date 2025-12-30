@@ -28,10 +28,9 @@ def load_geopoint_library():
     project_root = os.path.dirname(script_dir) 
 
     search_paths = [
-        os.path.join(project_root, "out", "build", "x64-Release", "bin"),
         os.path.join(project_root, "out", "build", "WSL-GCC-Debug", "bin"),
         os.path.join(project_root, "out", "build", "x64-Debug", "bin"),
-
+        os.path.join(project_root, "out", "build", "x64-Release", "bin"),
         os.path.join(project_root, "build", "bin"),
         os.path.join(project_root, "bin") # Common output dir
     ]

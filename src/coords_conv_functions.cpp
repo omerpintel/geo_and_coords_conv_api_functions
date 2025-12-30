@@ -21,6 +21,7 @@ double NavValidateLatitude(const double& inLatitude)
     return latitude;
 }
 
+
 double NavValidateLongitude(const double& inLongitude)
 {
     double longitude;
@@ -39,6 +40,7 @@ double NavValidateLongitude(const double& inLongitude)
     }
     return longitude;
 }
+
 
 void MulMatVec3(const double A[3][3], const double VIn[3], double VOut[3])
 {
@@ -125,7 +127,7 @@ SPointGeo EcefToGeo(const SPointECEF* ecefPoint)
 }
 
 
-SPointNED EcefToNed(const double* latitudeRad, const double* longitudeRad, const SPointECEF* ecefPoint)
+SPointNED EcefToNed(const double* latitudeRad, const double* longitudeRad, const double* altitude, const SPointECEF* ecefPoint)
 {
     double localLatitude = NavValidateLatitude(*latitudeRad);
     double localLongitude = NavValidateLongitude(*longitudeRad);
@@ -134,7 +136,7 @@ SPointNED EcefToNed(const double* latitudeRad, const double* longitudeRad, const
     double sinLong = std::sin(localLongitude);
     double cosLong = std::cos(localLongitude);
 
-    SPointGeo originInGeo = { localLatitude * 180.0 / PI, localLongitude * 180.0 / PI, 0.0 };
+    SPointGeo originInGeo = { localLatitude * 180.0 / PI, localLongitude * 180.0 / PI, *altitude };
     SPointECEF originInEcef = GeoToEcef(&originInGeo);
 
     double deltaX = ecefPoint->x - originInEcef.x;
@@ -165,7 +167,7 @@ SPointNED EcefToNed(const double* latitudeRad, const double* longitudeRad, const
 }
 
 
-SPointECEF NedToEcef(const double* latitudeRad, const double* longitudeRad, const SPointNED* nedPoint)
+SPointECEF NedToEcef(const double* latitudeRad, const double* longitudeRad, const double* altitude, const SPointNED* nedPoint)
 {
     double localLatitude = NavValidateLatitude(*latitudeRad);
     double localLongitude = NavValidateLongitude(*longitudeRad);
@@ -189,7 +191,7 @@ SPointECEF NedToEcef(const double* latitudeRad, const double* longitudeRad, cons
     double ecefVec[3];
     MulMatVec3(tempMat, nedVec, ecefVec);
 
-    SPointGeo originInGeo = { localLatitude * 180.0 / PI, localLongitude * 180.0 / PI, 0.0 };
+    SPointGeo originInGeo = { localLatitude * 180.0 / PI, localLongitude * 180.0 / PI, *altitude };
     SPointECEF originInEcef = GeoToEcef(&originInGeo);
     
     SPointECEF ecef;
