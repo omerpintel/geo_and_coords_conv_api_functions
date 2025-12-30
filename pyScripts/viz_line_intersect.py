@@ -35,9 +35,14 @@ def create_visualization(py_polygon, line_results, ORIGIN_LAT, ORIGIN_LON):
         
         folium.CircleMarker(location=start_geo, radius=3, color="black", fill=True).add_to(m)
 
-    output_file = "map_line_intersect.html"
-    m.save(output_file)
-    webbrowser.open(f"file://{os.path.abspath(output_file)}")
+    folder_name = "html_pages"
+    if not os.path.exists(folder_name):
+        os.makedirs(folder_name)
+
+    filename = "map_line_intersect.html"
+    output_path = os.path.join(folder_name, filename)
+    m.save(output_path)
+    webbrowser.open(f"file://{os.path.abspath(output_path)}")
 
 def main():
     lib = geo_utils.load_geopoint_library()

@@ -10,37 +10,10 @@
 	#define API_FUNCTIONS
 #endif
 
-#include <cstdint>
-#include <cstddef> 
-
-
-#pragma pack(push,1)
-
-/**
- * @struct Point
- * @brief Represents a point in a Local Tangent Plane (NED) coordinate system.
- *
- * This structure uses Cartesian coordinates in meters, where 'north' corresponds
- * to the X-axis and 'east' to the Y-axis relative to a local origin.
- */
-struct Point {
-	float north; /**< Distance in meters along the North axis (X). */
-	float east;  /**< Distance in meters along the East axis (Y). */
-};
-
-/**
- * @enum ResultState
- * @brief determines the status of the result
- */
-enum EResultState
-{
-	OK								 = 0,
-	POLYGON_WITH_LESS_THAN_3_POINTS  = 1,
-	POLYGON_IS_NULL_PTR				 = 2,
-	MAX_LENGTH_LESS_OR_EQUAL_TO_ZERO = 3
-};
-
-#pragma pack(pop)
+#include "api_utils.h"
+#include "api_structs.h"
+#include "geometric_functions.h"
+#include "coords_conv_functions.h"
 
 extern "C" {
 	/**
@@ -97,4 +70,17 @@ extern "C" {
 		EResultState* resultState
 	);
 
+	API_FUNCTIONS SPointNED GeoToNed(
+		const double* originLatitudeDeg,
+		const double* originLongitudeDeg,
+		const double* originAltitude,
+		const SPointGeo* geoPoint
+	);
+
+	API_FUNCTIONS SPointGeo NedToGeo(
+		const double* originLatitudeDeg, 
+		const double* originLongitudeDeg, 
+		const double* originAltitude,
+		const SPointNED* nedPoint
+	);
 }
