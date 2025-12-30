@@ -1,6 +1,7 @@
 import pymap3d as pm
 import ctypes
 import math
+import random
 
 import geo_utils
 
@@ -46,7 +47,7 @@ def test_geo_to_ned():
 
     # Target Point (Geodetic)
     # A point slightly North-East of origin
-    target_geo = SPointGeo(32.01, 34.01, 0.0)
+    target_geo = SPointGeo(32.01, 34.01, 50.0)
 
     # A. Get Expected Result from pymap3d
     # Note: pymap3d takes (lat, lon, alt, lat0, lon0, alt0)
@@ -116,7 +117,50 @@ def test_ned_to_geo():
     assert math.isclose(result_geo.longitudeDeg, exp_lon, abs_tol=1e-6)
     print(">> SUCCESS: NedToGeo matches.")
 
+def get_random_geo(center_lat, center_lon, radius_deg=1.0):
+    """Generates a random Geo point within roughly radius_deg of center."""
+    lat = center_lat + random.uniform(-radius_deg, radius_deg)
+    lon = center_lon + random.uniform(-radius_deg, radius_deg)
+    alt = random.uniform(-100, 1000)  # Random altitude
+    return SPointGeo(lat, lon, alt)
+
+def test_geo_to_ned_to_geo():
+    print("\n--- Testing GeoToNedToGeo ---")
+
+    # Origin (Reference Point)
+    lat0 = 32.0  # degrees
+    lon0 = 34.0  # degrees
+    alt0 = 0.0  # meters (pymap3d usually requires an origin altitude)
+
+    # Target Point (Geodetic)
+    #target_geo = SPointGeo(32.01, 34.01, 50.0)
+    target_geo = get_random_geo(lat0, lon0)
+
+
+    # B. Call C++ API
+    c_lat0 = ctypes.c_double(lat0)
+    c_lon0 = ctypes.c_double(lon0)
+
+    result_ned = lib.GeoToNed(ctypes.byref(c_lat0),
+                              ctypes.byref(c_lon0),
+                              ctypes.byref(target_geo))
+
+    result_geo = lib.NedToGeo(ctypes.byref(c_lat0),
+                              ctypes.byref(c_lon0),
+                              ctypes.byref(result_ned))
+
+    # C. Compare
+    print(f"Input Geo: {target_geo}")
+    print(f"C++ API : {result_geo}")
+
+    # Allow small error (e.g. 1cm)
+    assert math.isclose(result_geo.latitudeDeg, target_geo.latitudeDeg, abs_tol=1e-6)
+    assert math.isclose(result_geo.longitudeDeg, target_geo.longitudeDeg, abs_tol=1e-6)
+    assert math.isclose(result_geo.altitude, target_geo.altitude, abs_tol=0.01)
+    print(">> SUCCESS: GeoToNed matches.")
+
 
 if __name__ == "__main__":
-    test_ned_to_geo()
+    #test_ned_to_geo()
     #test_geo_to_ned()
+    test_geo_to_ned_to_geo()

@@ -32,9 +32,14 @@ def create_visualization(py_polygon, test_data, ORIGIN_LAT, ORIGIN_LON):
         # Center Dot
         folium.CircleMarker(location=[lat, lon], radius=1, color="black").add_to(m)
 
-    output_file = "map_point_inside.html"
-    m.save(output_file)
-    webbrowser.open(f"file://{os.path.abspath(output_file)}")
+    folder_name = "html_pages"
+    if not os.path.exists(folder_name):
+        os.makedirs(folder_name)
+
+    filename = "map_point_inside.html"
+    output_path = os.path.join(folder_name, filename)
+    m.save(output_path)
+    webbrowser.open(f"file://{os.path.abspath(output_path)}")
 
 def main():
     lib = geo_utils.load_geopoint_library()

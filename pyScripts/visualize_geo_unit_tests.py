@@ -66,6 +66,22 @@ def plot_tests_interactive(logfile):
         print("No valid data found.")
         return
 
+    # --- DYNAMIC LAYOUT CALCULATION ---
+    # Define pixel heights for readability
+    ROW_HEIGHT = 500       # Height in pixels for each test plot
+    TABLE_HEIGHT = 500     # Height in pixels for the summary table
+    SPACING_PIXELS = 80    # Space between plots in pixels
+
+    num_rows = len(valid_lines) + 1
+    total_height = TABLE_HEIGHT + (len(valid_lines) * ROW_HEIGHT)
+
+    # Calculate vertical_spacing as a fraction of total_height (required by Plotly)
+    # This ensures the gap is always ~80px regardless of how many plots there are.
+    if total_height > 0:
+        calc_spacing = SPACING_PIXELS / total_height
+    else:
+        calc_spacing = 0.05
+
     # Create subplots
     titles = [f"{d['name']}<br>{'✅' if d['exp'] == d['act'] else '❌'} (Exp: {d['exp'] == '1'}, Act: {d['act'] == '1'})"
               for d in valid_lines]
@@ -74,7 +90,7 @@ def plot_tests_interactive(logfile):
         rows=len(valid_lines) + 1,
         cols=1,
         subplot_titles=["Overall Test Summary"] + titles,
-        vertical_spacing=0.02,
+        vertical_spacing=calc_spacing,  # Use calculated spacing
         specs=[[{"type": "table"}]] + [[{"type": "xy"}]] * len(valid_lines)
     )
 
@@ -122,12 +138,33 @@ def plot_tests_interactive(logfile):
         fig.update_xaxes(title_text="East (m)", row=row, col=1)
         fig.update_yaxes(title_text="North (m)", scaleanchor=f"x{row}", scaleratio=1, row=row, col=1)
 
-    fig.update_layout(height=400 + (600 * len(valid_lines)), showlegend=False)
-    fig.write_html("test_report.html")
-    webbrowser.open('file://' + os.path.realpath("test_report.html"))
+    # Update layout with the calculated height
+    fig.update_layout(
+        height=total_height,
+        title_text="Test Execution Report",
+        showlegend=False,
+        margin=dict(t=100, b=50, l=50, r=50)  # Add margins
+    )
+
+    folder = "html_pages"
+
+    # Create the folder if it doesn't exist
+    if not os.path.exists(folder):
+        os.makedirs(folder)
+
+    filename = "test_report.html"
+    output_path = os.path.join(folder, filename)
+
+    # Save using the joined path
+    fig.write_html(output_path)
+
+    # Open using the absolute path to ensure the browser finds it
+    abs_path = os.path.abspath(output_path)
+    print(f"Generated: {abs_path}")
+    webbrowser.open('file://' + abs_path)
 
 
 if __name__ == "__main__":
     # Update path if necessary
-    path = r"C:\Users\OMERPI\Desktop\GeoPointProject\out\build\x64-Debug\bin\test_results_wgs84.log"
+    path = r"C:\Users\OMERPI\Desktop\GeoPointProject\out\build\x64-Debug\bin\test_results_geo.log"
     plot_tests_interactive(path)

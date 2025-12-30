@@ -5,7 +5,7 @@ import webbrowser
 import math
 
 # --- Configuration ---
-LOG_FILE_PATH = r"C:\Users\OMERPI\Desktop\GeoPointProject\out\build\x64-Debug\bin\test_results_ned_geo.log"
+LOG_FILE_PATH = r"C:\Users\OMERPI\Desktop\GeoPointProject\out\build\x64-Debug\bin\test_results_coords_conv.log"
 # ---------------------
 
 METERS_PER_DEG_LAT = 111319.9
@@ -112,7 +112,7 @@ def plot_ned_geo_tests(logfile):
         column_widths=[0.6, 0.4],
         row_heights=[0.3, 0.7],
         specs=[[{"type": "xy"}, {"type": "table", "rowspan": 2}],
-               [{"type": "mapbox", "colspan": 1}, None]],  # Changed "geo" to "mapbox"
+               [{"type": "map", "colspan": 1}, None]],  # Changed "geo" to "mapbox"
         subplot_titles=("Error Magnitude", "Test Log", "Interactive Map (Scroll to Zoom)")
     )
 
@@ -137,7 +137,7 @@ def plot_ned_geo_tests(logfile):
 
     # 3. Mapbox Traces
     # Passed
-    fig.add_trace(go.Scattermapbox(
+    fig.add_trace(go.Scattermap(
         lat=traces_pass['lat'], lon=traces_pass['lon'],
         mode='markers',
         marker=dict(size=12, color='#10B981'),
@@ -146,7 +146,7 @@ def plot_ned_geo_tests(logfile):
     ), row=2, col=1)
 
     # Failed
-    fig.add_trace(go.Scattermapbox(
+    fig.add_trace(go.Scattermap(
         lat=traces_fail['lat'], lon=traces_fail['lon'],
         mode='markers',
         marker=dict(size=14, color='#EF4444'),
@@ -156,7 +156,7 @@ def plot_ned_geo_tests(logfile):
 
     # Error Lines
     if line_lats:
-        fig.add_trace(go.Scattermapbox(
+        fig.add_trace(go.Scattermap(
             lat=line_lats, lon=line_lons,
             mode='lines',
             line=dict(width=2, color='red'),
@@ -164,11 +164,11 @@ def plot_ned_geo_tests(logfile):
             name="Error Offset"
         ), row=2, col=1)
 
-    # --- Mapbox Layout ---
+    # --- Map Layout ---
     fig.update_layout(
         height=900,
         title_text="Dynamic NED Debug Report",
-        mapbox=dict(
+        map=dict(
             style="open-street-map",  # Full street detail, no key needed
             center=dict(lat=center_lat, lon=center_lon),
             zoom=2,  # Start zoomed out, user can zoom in infinitely
@@ -178,10 +178,22 @@ def plot_ned_geo_tests(logfile):
         margin=dict(l=10, r=10, t=50, b=10)
     )
 
-    output_path = "dynamic_map_report.html"
+    folder = "html_pages"
+
+    # Create the folder if it doesn't exist
+    if not os.path.exists(folder):
+        os.makedirs(folder)
+
+    filename = "dynamic_map_report.html"
+    output_path = os.path.join(folder, filename)
+
+    # Save using the joined path
     fig.write_html(output_path)
-    print(f"Generated: {os.path.realpath(output_path)}")
-    webbrowser.open('file://' + os.path.realpath(output_path))
+
+    # Open using the absolute path to ensure the browser finds it
+    abs_path = os.path.abspath(output_path)
+    print(f"Generated: {abs_path}")
+    webbrowser.open('file://' + abs_path)
 
 
 if __name__ == "__main__":

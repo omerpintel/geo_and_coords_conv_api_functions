@@ -13,7 +13,7 @@
 #include <cstdint>
 
 // --- Global Log File ---
-std::ofstream g_logFile("test_results.log");
+std::ofstream g_logFile("test_results_geo.log");
 
 // --- Mini Test Framework ---
 int g_tests_passed = 0;
@@ -293,7 +293,7 @@ int main() {
 
     std::cout << "\n---------------------------------\n";
     std::cout << "SUMMARY: Passed: " << g_tests_passed << ", Failed: " << g_tests_failed << std::endl;
-    std::cout << "Log saved to: test_results.log" << std::endl;
+    std::cout << "Log saved to: test_results_geo.log" << std::endl;
 
     if (g_logFile.is_open()) g_logFile.close();
 

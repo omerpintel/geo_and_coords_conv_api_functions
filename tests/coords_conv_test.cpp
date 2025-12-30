@@ -12,7 +12,7 @@
 #include <vector>
 
 // --- Global Log File ---
-std::ofstream g_logFile("test_results_ned_geo.log");
+std::ofstream g_logFile("test_results_coords_conv.log");
 
 int g_tests_passed = 0;
 int g_tests_failed = 0;
