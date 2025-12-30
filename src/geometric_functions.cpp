@@ -1,7 +1,6 @@
 #include "geometric_functions.h"
 
 
-
 // Checks if two double values are effectively equal.
 // Uses a scaled epsilon comparison to handle floating-point precision errors.
 bool areAlmostEqual(const float a, const float b) {
@@ -16,7 +15,8 @@ double getDistSq(const Point& a, const Point& b) {
     return dn * dn + de * de;
 }
 
-// Calculates the squared shortest distance from a point to a line segment.
+// Calculates the squared shortest distance
+// from a point to a line segment.
 double getDistToSegmentSquared(const Point& p, const Point& a, const Point& b) {
     const float l2 = getDistSq(a, b);
 
@@ -48,7 +48,6 @@ bool onSegment(const Point& p, const Point& q, const Point& r) {
         q.east <= MAX(p.east, r.east) && q.east >= MIN(p.east, r.east);
 }
 
-
 // Determines the orientation of the ordered triplet (p, q, r).
  // return 0 if collinear, 1 if clockwise, 2 if counter-clockwise.
 int orientation(const Point& p, const Point& q, const Point& r) {
@@ -58,7 +57,6 @@ int orientation(const Point& p, const Point& q, const Point& r) {
     if (areAlmostEqual(val, 0.0)) return 0;
     return (val > 0) ? 1 : 2;
 }
-
 
 // Checks if two line segments (p1-q1 and p2-q2) intersect.
 // Uses the general case and special cases (collinear points) of the orientation method.
