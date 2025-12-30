@@ -134,6 +134,14 @@ SPointNED EcefToNed(const double* latitudeRad, const double* longitudeRad, const
     double sinLong = std::sin(localLongitude);
     double cosLong = std::cos(localLongitude);
 
+    SPointGeo originInGeo = { localLatitude * 180.0 / PI, localLongitude * 180.0 / PI, 0.0 };
+    SPointECEF originInEcef = GeoToEcef(&originInGeo);
+
+    double deltaX = ecefPoint->x - originInEcef.x;
+    double deltaY = ecefPoint->y - originInEcef.y;
+    double deltaZ = ecefPoint->z - originInEcef.z;
+    
+
     double tempMat[3][3];
     tempMat[0][0] = -sinLat * cosLong;
     tempMat[0][1] = -sinLat * sinLong;
@@ -145,9 +153,10 @@ SPointNED EcefToNed(const double* latitudeRad, const double* longitudeRad, const
     tempMat[2][1] = -cosLat * sinLong;
     tempMat[2][2] = -sinLat;
 
-    double ecefVec[3] = { ecefPoint->x,ecefPoint->y,ecefPoint->z };
+
+    double deltaEcefVec[3] = { deltaX,deltaY,deltaZ };
     double nedVec[3];
-    MulMatVec3(tempMat, ecefVec, nedVec);
+    MulMatVec3(tempMat, deltaEcefVec, nedVec);
 
     SPointNED ned;
     ned.north = nedVec[0];
