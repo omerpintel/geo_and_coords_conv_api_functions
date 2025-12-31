@@ -23,7 +23,7 @@ void ResetCoverage() {
 
 // --- Main API Functions ---
 
-void isInsidePolygon(const Point* polygon, uint16_t pointCount, const Point* testPoint, float radiusMeters, bool* outResult, EResultState* resultState) {
+void isInsidePolygon(const SPointNE* polygon, uint16_t pointCount, const SPointNE testPoint, float radiusMeters, uint8_t* outResult, uint8_t* resultState) {
     #if defined(_DEBUG) || !defined(NDEBUG)
         const ECovFuncID current_func_id = ECovFuncID::IsInside;
     #endif
@@ -53,7 +53,7 @@ void isInsidePolygon(const Point* polygon, uint16_t pointCount, const Point* tes
     for (size_t i = 0, j = pointCount - 1; i < pointCount; j = i++) {
         COV_POINT(3);
         // Check if edge straddles the test point's East line
-        if ((polygon[i].east > testPoint->east) != (polygon[j].east > testPoint->east)) {
+        if ((polygon[i].east > testPoint.east) != (polygon[j].east > testPoint.east)) {
             COV_POINT(4);
 
             // for safety of dividing by zero
@@ -63,10 +63,10 @@ void isInsidePolygon(const Point* polygon, uint16_t pointCount, const Point* tes
             }
             // Calculate intersection on North axis 
             // y = y_1 + m*(x-x_1)
-            double intersectN = polygon[i].north + ((polygon[j].north - polygon[i].north) / deltaEast) * (testPoint->east - polygon[i].east);
+            double intersectN = polygon[i].north + ((polygon[j].north - polygon[i].north) / deltaEast) * (testPoint.east - polygon[i].east);
 
             // Toggle state if intersection is strictly to the North of test point
-            if (testPoint->north < intersectN) {
+            if (testPoint.north < intersectN) {
                 COV_POINT(5);
                 isCenterInside = !isCenterInside;
             }
@@ -84,7 +84,7 @@ void isInsidePolygon(const Point* polygon, uint16_t pointCount, const Point* tes
     // Check if circle intersect any edges.
     for (size_t i = 0; i < pointCount; ++i) {
         COV_POINT(7);
-        double dSq = getDistToSegmentSquared(*testPoint, polygon[i], polygon[(i + 1) % pointCount]);
+        double dSq = getDistToSegmentSquared(testPoint, polygon[i], polygon[(i + 1) % pointCount]);
 
         // If distance is less than radius, the object hits the wall.
         if (dSq < radiusMeters * radiusMeters && !areAlmostEqual(dSq, radiusMeters * radiusMeters)) {
@@ -107,7 +107,7 @@ void isInsidePolygon(const Point* polygon, uint16_t pointCount, const Point* tes
 }
 
 
-void doesLineIntersectPolygon(const Point* polygon, uint16_t pointCount, const Point* testPoint, float azimuthDegrees, float maxLength, bool* outResult, EResultState* resultState) {
+void doesLineIntersectPolygon(const SPointNE* polygon, uint16_t pointCount, const SPointNE testPoint, float azimuthDegrees, float maxLength, uint8_t* outResult, uint8_t* resultState) {
     #if defined(_DEBUG) || !defined(NDEBUG)
         const ECovFuncID current_func_id = ECovFuncID::Intersect;
     #endif
@@ -134,8 +134,8 @@ void doesLineIntersectPolygon(const Point* polygon, uint16_t pointCount, const P
         return;
     }
 
-    bool tempResult = false;
-    EResultState tempResultState = EResultState::OK;
+    uint8_t tempResult = false;
+    uint8_t tempResultState = EResultState::OK;
 
     // If the Start Point is inside the polygon, it is an immediate intersection.
     isInsidePolygon(polygon, pointCount, testPoint, 0.0, &tempResult, &tempResultState);
@@ -148,17 +148,17 @@ void doesLineIntersectPolygon(const Point* polygon, uint16_t pointCount, const P
     // Calculate End Point of the Line
     // NED System: Azimuth 0 is North (+X), 90 is East (+Y).
     double thetaRad = azimuthDegrees * (PI / 180.0);
-    Point endPoint;
-    endPoint.north = testPoint->north + maxLength * std::cos(thetaRad);
-    endPoint.east = testPoint->east + maxLength * std::sin(thetaRad);
+    SPointNE endPoint;
+    endPoint.north = testPoint.north + maxLength * std::cos(thetaRad);
+    endPoint.east = testPoint.east + maxLength * std::sin(thetaRad);
 
     // Check Intersection with all Polygon Edges
     for (size_t i = 0; i < pointCount; ++i) {
         COV_POINT(5);
-        Point p1 = polygon[i];
-        Point p2 = polygon[(i + 1) % pointCount];
+        SPointNE p1 = polygon[i];
+        SPointNE p2 = polygon[(i + 1) % pointCount];
 
-        if (doSegmentsIntersect(*testPoint, endPoint, p1, p2)) {
+        if (doSegmentsIntersect(testPoint, endPoint, p1, p2)) {
             COV_POINT(6);
             *outResult = true;
             return;
@@ -170,25 +170,19 @@ void doesLineIntersectPolygon(const Point* polygon, uint16_t pointCount, const P
 }
 
 
-SPointNED GeoToNed(const double* originLatitudeDeg, const double* originLongitudeDeg, const double* originAltitude, const SPointGeo* geoPoint)
+void GeoToNed(const double originLatitudeDeg, const double originLongitudeDeg, const double originAltitude, const SPointGeo geoPoint, SPointNED* resNedPoint)
 {
-    double latitudeRad = *originLatitudeDeg * PI / 180.0;
-    double longitudeRad = *originLongitudeDeg * PI / 180.0;
-
     SPointECEF pointEcef = GeoToEcef(geoPoint);
-    SPointNED pointNed = EcefToNed(&latitudeRad, &longitudeRad, originAltitude, &pointEcef);
+    SPointNED pointNed = EcefToNed(originLatitudeDeg, originLongitudeDeg, originAltitude, pointEcef);
 
-    return pointNed;
+    *resNedPoint = pointNed;
 }
 
 
-SPointGeo NedToGeo(const double* originLatitudeDeg, const double* originLongitudeDeg, const double* originAltitude, const SPointNED* nedPoint)
+void NedToGeo(const double originLatitudeDeg, const double originLongitudeDeg, const double originAltitude, const SPointNED nedPoint, SPointGeo* resGeopoint)
 {
-    double latitudeRad = *originLatitudeDeg *  PI / 180.0;;
-    double longitudeRad = *originLongitudeDeg * PI / 180.0;
+    SPointECEF pointEcef = NedToEcef(originLatitudeDeg, originLongitudeDeg, originAltitude, nedPoint);
+    SPointGeo pointGeo = EcefToGeo(pointEcef);
 
-    SPointECEF pointEcef = NedToEcef(&latitudeRad, &longitudeRad, originAltitude, nedPoint);
-    SPointGeo pointGeo = EcefToGeo(&pointEcef);
-
-    return pointGeo;
+    *resGeopoint = pointGeo;
 }

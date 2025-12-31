@@ -21,18 +21,18 @@ int g_tests_failed = 0;
 
 // Helper struct to simplify API outputs for testing
 struct ApiResult {
-    bool isCollision;
-    EResultState state;
+    uint8_t isCollision;
+    uint8_t state;
 };
 
 // --- Serialization Helpers for Logging ---
-std::string PointToStr(const Point& p) {
+std::string PointToStr(const SPointNE& p) {
     std::stringstream ss;
     ss << p.north << "," << p.east;
     return ss.str();
 }
 
-std::string PolyToStr(const Point* poly, uint16_t count) {
+std::string PolyToStr(const SPointNE* poly, uint16_t count) {
     if (!poly || count == 0) return "EMPTY";
     std::stringstream ss;
     for (uint16_t i = 0; i < count; ++i) {
@@ -43,24 +43,24 @@ std::string PolyToStr(const Point* poly, uint16_t count) {
 }
 
 // --- API Wrappers ---
-ApiResult CallIsInside(const Point* poly, uint16_t count, const Point& pt, float rad) {
-    bool res = false;
-    EResultState state = EResultState::OK;
-    isInsidePolygon(poly, count, &pt, rad, &res, &state);
+ApiResult CallIsInside(const SPointNE* poly, uint16_t count, const SPointNE& pt, float rad) {
+    uint8_t res = false;
+    uint8_t state = EResultState::OK;
+    isInsidePolygon(poly, count, pt, rad, &res, &state);
     return { res, state };
 }
 
-ApiResult CallIntersect(const Point* poly, uint16_t count, const Point& pt, float az, float len) {
-    bool res = false;
-    EResultState state = EResultState::OK;
-    doesLineIntersectPolygon(poly, count, &pt, az, len, &res, &state);
+ApiResult CallIntersect(const SPointNE* poly, uint16_t count, const SPointNE& pt, float az, float len) {
+    uint8_t res = false;
+    uint8_t state = EResultState::OK;
+    doesLineIntersectPolygon(poly, count, pt, az, len, &res, &state);
     return { res, state };
 }
 
 // --- Test Runners with Logging ---
 
 // 1. Runner for Circle/Point Tests
-void RunTest_Circle(const std::string& testName, const Point* poly, uint16_t count, Point pt, float rad, bool expectCollision) {
+void RunTest_Circle(const std::string& testName, const SPointNE* poly, uint16_t count, SPointNE pt, float rad, bool expectCollision) {
     // A. Run API
     ApiResult result = CallIsInside(poly, count, pt, rad);
 
@@ -92,7 +92,7 @@ void RunTest_Circle(const std::string& testName, const Point* poly, uint16_t cou
 }
 
 // 2. Runner for Line Intersection Tests
-void RunTest_Line(const std::string& testName, const Point* poly, uint16_t count, Point pt, float az, float len, bool expectCollision) {
+void RunTest_Line(const std::string& testName, const SPointNE* poly, uint16_t count, SPointNE pt, float az, float len, bool expectCollision) {
     // A. Run API
     ApiResult result = CallIntersect(poly, count, pt, az, len);
 
@@ -137,21 +137,21 @@ void RunTest_Line(const std::string& testName, const Point* poly, uint16_t count
     }
 
 // --- Test Data ---
-Point square_polygon[] = {
+SPointNE square_polygon[] = {
     {0.0f, 0.0f}, {0.0f, 10.0f}, {10.0f, 10.0f}, {10.0f, 0.0f}
 };
 uint16_t square_size = 4;
 
-Point u_shape_pts[] = {
+SPointNE u_shape_pts[] = {
     {0.0f, 0.0f},   {10.0f, 0.0f},  {10.0f, 10.0f}, {7.0f, 10.0f},
     {7.0f, 3.0f},   {3.0f, 3.0f},   {3.0f, 10.0f},  {0.0f, 10.0f}
 };
-uint16_t u_shape_size = sizeof(u_shape_pts) / sizeof(Point);
+uint16_t u_shape_size = sizeof(u_shape_pts) / sizeof(SPointNE);
 
-Point triangle_pts[] = {
+SPointNE triangle_pts[] = {
     {0.0f, 0.0f}, {10.0f, 2.0f}, {0.0f, 4.0f}
 };
-uint16_t triangle_size = sizeof(triangle_pts) / sizeof(Point);
+uint16_t triangle_size = sizeof(triangle_pts) / sizeof(SPointNE);
 // --- Tests ---
 
 void test_is_inside() {

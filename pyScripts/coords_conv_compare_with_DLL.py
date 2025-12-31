@@ -26,17 +26,19 @@ class SPointNED(ctypes.Structure):
 
 lib = geo_utils.load_geopoint_library()
 
-lib.GeoToNed.argtypes = [ctypes.POINTER(ctypes.c_double),
-                         ctypes.POINTER(ctypes.c_double),
-                         ctypes.POINTER(ctypes.c_double),
-                         ctypes.POINTER(SPointGeo)]
-lib.GeoToNed.restype = SPointNED
-# -----------------------
-lib.NedToGeo.argtypes = [ctypes.POINTER(ctypes.c_double),
-                         ctypes.POINTER(ctypes.c_double),
-                         ctypes.POINTER(ctypes.c_double),
+lib.GeoToNed.argtypes = [ctypes.c_double,
+                         ctypes.c_double,
+                         ctypes.c_double,
+                         SPointGeo,
                          ctypes.POINTER(SPointNED)]
-lib.NedToGeo.restype = SPointGeo
+lib.GeoToNed.restype = None
+# -----------------------
+lib.NedToGeo.argtypes = [ctypes.c_double,
+                         ctypes.c_double,
+                         ctypes.c_double,
+                         SPointNED,
+                         ctypes.POINTER(SPointGeo)]
+lib.NedToGeo.restype = None
 
 
 def test_geo_to_ned():
@@ -66,10 +68,12 @@ def test_geo_to_ned():
     c_lon0 = ctypes.c_double(lon0)
     c_alt0 = ctypes.c_double(alt0)
 
-    result_ned = lib.GeoToNed(ctypes.byref(c_lat0),
-                              ctypes.byref(c_lon0),
-                              ctypes.byref(c_alt0),
-                              ctypes.byref(target_geo))
+    result_ned = SPointNED()
+    lib.GeoToNed(c_lat0,
+                 c_lon0,
+                 c_alt0,
+                 target_geo,
+                 ctypes.byref(result_ned))
 
     # C. Compare
     print(f"Input Geo: {target_geo}")
@@ -108,10 +112,12 @@ def test_ned_to_geo():
     c_lon0 = ctypes.c_double(lon0)
     c_alt0 = ctypes.c_double(alt0)
 
-    result_geo = lib.NedToGeo(ctypes.byref(c_lat0),
-                              ctypes.byref(c_lon0),
-                              ctypes.byref(c_alt0),
-                              ctypes.byref(target_ned))
+    result_geo = SPointGeo()
+    lib.NedToGeo(c_lat0,
+                c_lon0,
+                c_alt0,
+                target_ned,
+                ctypes.byref(result_geo))
 
     # C. Compare
     print(f"Input NED: {target_ned}")
@@ -151,15 +157,19 @@ def test_geo_to_ned_to_geo():
     c_lon0 = ctypes.c_double(lon0)
     c_alt0 = ctypes.c_double(alt0)
 
-    result_ned = lib.GeoToNed(ctypes.byref(c_lat0),
-                              ctypes.byref(c_lon0),
-                              ctypes.byref(c_alt0),
-                              ctypes.byref(target_geo))
+    result_ned = SPointNED()
+    lib.GeoToNed(c_lat0,
+                 c_lon0,
+                 c_alt0,
+                 target_geo,
+                 ctypes.byref(result_ned))
 
-    result_geo = lib.NedToGeo(ctypes.byref(c_lat0),
-                              ctypes.byref(c_lon0),
-                              ctypes.byref(c_alt0),
-                              ctypes.byref(result_ned))
+    result_geo = SPointGeo()
+    lib.NedToGeo(c_lat0,
+                 c_lon0,
+                 c_alt0,
+                 result_ned,
+                 ctypes.byref(result_geo))
 
     # C. Compare
     print(f"Input Geo: {target_geo}")
