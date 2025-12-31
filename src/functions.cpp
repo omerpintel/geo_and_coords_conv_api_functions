@@ -172,11 +172,8 @@ void doesLineIntersectPolygon(const SPointNE* polygon, uint16_t pointCount, cons
 
 void GeoToNed(const double originLatitudeDeg, const double originLongitudeDeg, const double originAltitude, const SPointGeo geoPoint, SPointNED* resNedPoint)
 {
-    double originlatitudeRad = originLatitudeDeg * PI / 180.0;
-    double originlongitudeRad = originLongitudeDeg * PI / 180.0;
-
     SPointECEF pointEcef = GeoToEcef(geoPoint);
-    SPointNED pointNed = EcefToNed(originlatitudeRad, originlongitudeRad, originAltitude, pointEcef);
+    SPointNED pointNed = EcefToNed(originLatitudeDeg, originLongitudeDeg, originAltitude, pointEcef);
 
     *resNedPoint = pointNed;
 }
@@ -184,10 +181,7 @@ void GeoToNed(const double originLatitudeDeg, const double originLongitudeDeg, c
 
 void NedToGeo(const double originLatitudeDeg, const double originLongitudeDeg, const double originAltitude, const SPointNED nedPoint, SPointGeo* resGeopoint)
 {
-    double latitudeRad = originLatitudeDeg *  PI / 180.0;;
-    double longitudeRad = originLongitudeDeg * PI / 180.0;
-
-    SPointECEF pointEcef = NedToEcef(latitudeRad, longitudeRad, originAltitude, nedPoint);
+    SPointECEF pointEcef = NedToEcef(originLatitudeDeg, originLongitudeDeg, originAltitude, nedPoint);
     SPointGeo pointGeo = EcefToGeo(pointEcef);
 
     *resGeopoint = pointGeo;
