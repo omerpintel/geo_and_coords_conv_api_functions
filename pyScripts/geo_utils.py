@@ -5,12 +5,12 @@ import math
 from enum import IntEnum
 
 # --- 1. Shared C Structure ---
-class Point(ctypes.Structure):
+class SPointNE(ctypes.Structure):
     _pack_ = 1
     _fields_ = [("north", ctypes.c_float), ("east", ctypes.c_float)]
 
     def __repr__(self):
-        return f"Point(N={self.north:.2f}, E={self.east:.2f})"
+        return f"SPointNE(N={self.north:.2f}, E={self.east:.2f})"
 
 class EResultState(IntEnum):
     OK = 0
@@ -21,7 +21,7 @@ class EResultState(IntEnum):
 # --- 2. Shared Library Loader ---
 def load_geopoint_library():
     """Finds and loads the api_functions DLL."""
-    lib_name = "api_functions.dll" if sys.platform.startswith("win32") else "api_functions.so"
+    lib_name = "api_functions.dll" if sys.platform.startswith("win32") else "libapi_functions.so"
     
     # Go up one level from 'scripts' to project root
     script_dir = os.path.dirname(os.path.abspath(__file__))

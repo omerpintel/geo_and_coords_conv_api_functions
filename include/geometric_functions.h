@@ -1,7 +1,11 @@
 #pragma once
 
 #include "api_structs.h"
-#include "api_utils.h"
+
+#include <cmath>     // for fabs,sin,cos
+
+// --- Constants ---
+const double EPSILON = 1e-9;
 
 // --- Helper Functions ---
 #define MIN(a, b) (((a) < (b)) ? (a) : (b))
@@ -9,12 +13,12 @@
 
 bool areAlmostEqual(const float a, const float b);
 
-double getDistSq(const Point& a, const Point& b);
+double getDistSq(const SPointNE& a, const SPointNE& b);
 
-double getDistToSegmentSquared(const Point& p, const Point& a, const Point& b);
+double getDistToSegmentSquared(const SPointNE& p, const SPointNE& a, const SPointNE& b);
 
-bool onSegment(const Point& p, const Point& q, const Point& r);
+bool onSegment(const SPointNE& p, const SPointNE& q, const SPointNE& r);
 
-int orientation(const Point& p, const Point& q, const Point& r);
+int orientation(const SPointNE& p, const SPointNE& q, const SPointNE& r);
 
-bool doSegmentsIntersect(const Point& p1, const Point& q1, const Point& p2, const Point& q2);
+bool doSegmentsIntersect(const SPointNE& p1, const SPointNE& q1, const SPointNE& p2, const SPointNE& q2);

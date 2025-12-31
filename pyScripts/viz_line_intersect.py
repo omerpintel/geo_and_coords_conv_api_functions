@@ -7,7 +7,7 @@ import math
 import folium
 
 import geo_utils
-from geo_utils import Point, EResultState
+from geo_utils import SPointNE, EResultState
 
 def create_visualization(py_polygon, line_results, ORIGIN_LAT, ORIGIN_LON):
     print("\nGenerating Line Intersection Map...")
@@ -48,34 +48,34 @@ def main():
     lib = geo_utils.load_geopoint_library()
 
     lib.doesLineIntersectPolygon.argtypes = [
-        ctypes.POINTER(Point), ctypes.c_uint16, ctypes.POINTER(Point), ctypes.c_float, ctypes.c_float, ctypes.POINTER(ctypes.c_bool), ctypes.POINTER(ctypes.c_uint8)
+        ctypes.POINTER(SPointNE), ctypes.c_uint16, SPointNE, ctypes.c_float, ctypes.c_float, ctypes.POINTER(ctypes.c_uint8), ctypes.POINTER(ctypes.c_uint8)
     ]
     lib.doesLineIntersectPolygon.restype = None
 
     ORIGIN_LAT, ORIGIN_LON = 32.0853, 34.7818
-    origin_pt = Point(0, 0)
+    origin_pt = SPointNE(0, 0)
 
     # Generate Polygon
     py_polygon = []
     for a in sorted([random.uniform(0, 2 * math.pi) for _ in range(16)]):
         r = random.uniform(300, 700)
-        py_polygon.append(Point(r * math.cos(a), r * math.sin(a)))
+        py_polygon.append(SPointNE(r * math.cos(a), r * math.sin(a)))
     
-    c_polygon = (Point * len(py_polygon))(*py_polygon)
+    c_polygon = (SPointNE * len(py_polygon))(*py_polygon)
 
     # Generate Lines
     line_results = []
     for _ in range(50):
         r_pos, theta = 1000 * math.sqrt(random.random()), random.uniform(0, 2*math.pi)
-        start_pt = Point(r_pos * math.cos(theta), r_pos * math.sin(theta))
+        start_pt = SPointNE(r_pos * math.cos(theta), r_pos * math.sin(theta))
         az, length = random.uniform(0, 360), random.uniform(100, 800)
 
-        out_result = ctypes.c_bool()
+        out_result = ctypes.c_uint8()
         out_state = ctypes.c_uint8()
 
-        lib.doesLineIntersectPolygon(c_polygon, len(py_polygon), ctypes.byref(start_pt), az, length, out_result, out_state)
+        lib.doesLineIntersectPolygon(c_polygon, len(py_polygon), start_pt, az, length, out_result, out_state)
         state_enum = EResultState(out_state.value)
-        is_hit = out_result.value
+        is_hit = bool(out_result.value)
 
         if state_enum == EResultState.OK:
             # Process Valid Result

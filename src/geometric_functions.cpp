@@ -9,7 +9,7 @@ bool areAlmostEqual(const float a, const float b) {
 
 // Calculates the squared Euclidean distance between two points.
 // Using squared distance avoids expensive square root operations during comparisons.
-double getDistSq(const Point& a, const Point& b) {
+double getDistSq(const SPointNE& a, const SPointNE& b) {
     double dn = a.north - b.north;
     double de = a.east - b.east;
     return dn * dn + de * de;
@@ -17,7 +17,7 @@ double getDistSq(const Point& a, const Point& b) {
 
 // Calculates the squared shortest distance
 // from a point to a line segment.
-double getDistToSegmentSquared(const Point& p, const Point& a, const Point& b) {
+double getDistToSegmentSquared(const SPointNE& p, const SPointNE& a, const SPointNE& b) {
     const float l2 = getDistSq(a, b);
 
     // If start and end points are identical, return distance to point 'a'
@@ -33,7 +33,7 @@ double getDistToSegmentSquared(const Point& p, const Point& a, const Point& b) {
     if (t < 0.0) t = 0.0;
     else if (t > 1.0) t = 1.0;
 
-    Point projection = {
+    SPointNE projection = {
         a.north + t * (b.north - a.north),
         a.east + t * (b.east - a.east)
     };
@@ -43,14 +43,14 @@ double getDistToSegmentSquared(const Point& p, const Point& a, const Point& b) {
 
 // Checks if point q lies on the line segment pr.
 // Assumes points are already known to be collinear.
-bool onSegment(const Point& p, const Point& q, const Point& r) {
+bool onSegment(const SPointNE& p, const SPointNE& q, const SPointNE& r) {
     return q.north <= MAX(p.north, r.north) && q.north >= MIN(p.north, r.north) &&
         q.east <= MAX(p.east, r.east) && q.east >= MIN(p.east, r.east);
 }
 
 // Determines the orientation of the ordered triplet (p, q, r).
  // return 0 if collinear, 1 if clockwise, 2 if counter-clockwise.
-int orientation(const Point& p, const Point& q, const Point& r) {
+int orientation(const SPointNE& p, const SPointNE& q, const SPointNE& r) {
     double val = (q.east - p.east) * (r.north - q.north) -
         (q.north - p.north) * (r.east - q.east);
 
@@ -60,7 +60,7 @@ int orientation(const Point& p, const Point& q, const Point& r) {
 
 // Checks if two line segments (p1-q1 and p2-q2) intersect.
 // Uses the general case and special cases (collinear points) of the orientation method.
-bool doSegmentsIntersect(const Point& p1, const Point& q1, const Point& p2, const Point& q2) {
+bool doSegmentsIntersect(const SPointNE& p1, const SPointNE& q1, const SPointNE& p2, const SPointNE& q2) {
     int o1 = orientation(p1, q1, p2);
     int o2 = orientation(p1, q1, q2);
     int o3 = orientation(p2, q2, p1);

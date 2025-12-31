@@ -10,7 +10,6 @@
 	#define API_FUNCTIONS
 #endif
 
-#include "api_utils.h"
 #include "api_structs.h"
 #include "geometric_functions.h"
 #include "coords_conv_functions.h"
@@ -34,12 +33,12 @@ extern "C" {
 	 * @return true if the circle/point is inside the polygon boundary; false otherwise.
 	 */
 	API_FUNCTIONS void isInsidePolygon(
-		const Point* polygon,
+		const SPointNE* polygon,
 		uint16_t pointCount,
-		const Point* testPoint,
+		const SPointNE testPoint,
 		float radiusMeters,
-		bool* outResult,
-		EResultState* resultState
+		uint8_t* outResult,	 // bool
+		uint8_t* resultState // EResultState
 	);
 
 	/**
@@ -61,26 +60,28 @@ extern "C" {
 	 * @return true if the line intersects the polygon or originates inside it; false otherwise.
 	 */
 	API_FUNCTIONS void doesLineIntersectPolygon(
-		const Point* polygon,
+		const SPointNE* polygon,
 		uint16_t pointCount,
-		const Point* testPoint,
+		const SPointNE testPoint,
 		float azimuthDegrees,
 		float maxLengthMeters,
-		bool* outResult,
-		EResultState* resultState
+		uint8_t* outResult,	 // bool
+		uint8_t* resultState // EResultState
 	);
 
-	API_FUNCTIONS SPointNED GeoToNed(
-		const double* originLatitudeDeg,
-		const double* originLongitudeDeg,
-		const double* originAltitude,
-		const SPointGeo* geoPoint
+	API_FUNCTIONS void GeoToNed(
+		const double originLatitudeDeg,
+		const double originLongitudeDeg,
+		const double originAltitude,
+		const SPointGeo geoPoint,
+		SPointNED* resNedPoint
 	);
 
-	API_FUNCTIONS SPointGeo NedToGeo(
-		const double* originLatitudeDeg, 
-		const double* originLongitudeDeg, 
-		const double* originAltitude,
-		const SPointNED* nedPoint
+	API_FUNCTIONS void NedToGeo(
+		const double originLatitudeDeg, 
+		const double originLongitudeDeg, 
+		const double originAltitude,
+		const SPointNED nedPoint,
+		SPointGeo* resGeoPoint
 	);
 }
