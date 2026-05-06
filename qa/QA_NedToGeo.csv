@@ -1,0 +1,7 @@
+Description,Origin Latitude (deg),Origin Longitude (deg),Origin Altitude (m),Input North (m),Input East (m),Input Down (m),Expected Latitude (deg),Expected Longitude (deg),Expected Altitude (m),Expected Error Code
+Inverse of GeoToNed 1km NE case,32.0,34.0,0.0,1111.0,943.0,-50.0,32.0100187465,34.0099805673,50.1667832046,OK
+Pure northward NED to geographic,32.0,34.0,0.0,11132.0,0.0,0.0,32.1003897617,34.0000000000,9.7523942969,OK
+Pure eastward NED to geographic,32.0,34.0,0.0,0.0,9430.0,0.0,31.9999607536,34.0997955014,6.9645123893,OK
+Negative NED values to southwest,32.0,34.0,0.0,-11132.0,-9430.0,-100.0,31.8995711349,33.9003146752,116.7167732133,OK
+Zero NED returns origin coordinates,32.0,34.0,0.0,0.0,0.0,0.0,32.0000000000,34.0000000000,0.0000000000,OK
+High altitude only,32.0,34.0,0.0,0.0,0.0,-500.0,32.0000000000,34.0000000000,500.0000000007,OK

@@ -3,15 +3,14 @@
 #include "api_structs.h"
 
 #include <cmath>     // for fabs,sin,cos
+#include <algorithm> // for std::min, std::max
 
 // --- Constants ---
-const double EPSILON = 1e-9;
+constexpr double EPSILON = 1e-9;
 
 // --- Helper Functions ---
-#define MIN(a, b) (((a) < (b)) ? (a) : (b))
-#define MAX(a, b) (((a) > (b)) ? (a) : (b))
 
-bool areAlmostEqual(const float a, const float b);
+bool areAlmostEqual(const double a, const double b);
 
 double getDistSq(const SPointNE& a, const SPointNE& b);
 

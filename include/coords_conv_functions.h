@@ -7,8 +7,8 @@
 #include <cmath>     // for fabs,sin,cos
 
 // --- Constants ---
-const double PI = 3.14159265358979323846;
-const double EPSILON_COORDS = 1e-9;
+constexpr double PI = 3.14159265358979323846;
+constexpr double EPSILON_COORDS = 1e-9;
 
 namespace WGS84
 {

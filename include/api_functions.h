@@ -1,7 +1,7 @@
 #pragma once
 
 #if defined(_WIN32)
-	#if defined(POLYGON_LIB_EXPORTS)
+	#if defined(API_FUNCTIONS_LIB_EXPORTS)
 		#define API_FUNCTIONS __declspec(dllexport)
 	#else
 		#define API_FUNCTIONS __declspec(dllimport)
@@ -38,7 +38,7 @@ extern "C" {
 		const SPointNE testPoint,
 		float radiusMeters,
 		uint8_t* outResult,	 // bool
-		uint8_t* resultState // EResultState
+		uint8_t* resultState // EIsInsideResult
 	);
 
 	/**
@@ -53,8 +53,7 @@ extern "C" {
 	 * @param[in] polygon         Pointer to an array of Point structures defining the polygon vertices.
 	 * @param[in] pointCount      The number of vertices in the polygon array.
 	 * @param[in] testPoint       The starting point of the line segment (in NED meters).
-	 * @param[in] origin          Reference point for the coordinate system (Unused; kept for API consistency).
-	 * @param[in] azimuthDegrees  The direction of the line in degrees relative to North (0° = North, 90° = East).
+	 * @param[in] azimuthDegrees  The direction of the line in degrees relative to North (0 = North, 90 = East).
 	 * @param[in] maxLengthMeters The length of the line segment in meters.
 	 *
 	 * @return true if the line intersects the polygon or originates inside it; false otherwise.
@@ -66,21 +65,17 @@ extern "C" {
 		float azimuthDegrees,
 		float maxLengthMeters,
 		uint8_t* outResult,	 // bool
-		uint8_t* resultState // EResultState
+		uint8_t* resultState // ELineIntersectResult
 	);
 
 	API_FUNCTIONS void GeoToNed(
-		const double originLatitudeDeg,
-		const double originLongitudeDeg,
-		const double originAltitude,
+		const SPointGeo origin,
 		const SPointGeo geoPoint,
 		SPointNED* resNedPoint
 	);
 
 	API_FUNCTIONS void NedToGeo(
-		const double originLatitudeDeg, 
-		const double originLongitudeDeg, 
-		const double originAltitude,
+		const SPointGeo origin,
 		const SPointNED nedPoint,
 		SPointGeo* resGeoPoint
 	);

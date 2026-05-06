@@ -1,6 +1,9 @@
 import ctypes
 import math
 import random
+import sys
+import os
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'shared'))
 import pymap3d as pm
 import pandas as pd
 import plotly.express as px
@@ -17,12 +20,14 @@ NUM_TESTS = 1000
 
 # --- 1. Define C++ Structs ---
 class SPointGeo(ctypes.Structure):
+    _pack_ = 1
     _fields_ = [("latitudeDeg", ctypes.c_double),
                 ("longitudeDeg", ctypes.c_double),
                 ("altitude", ctypes.c_double)]
 
 
 class SPointNED(ctypes.Structure):
+    _pack_ = 1
     _fields_ = [("north", ctypes.c_double),
                 ("east", ctypes.c_double),
                 ("down", ctypes.c_double)]
@@ -31,16 +36,12 @@ class SPointNED(ctypes.Structure):
 # --- 2. Load Library ---
 lib = geo_utils.load_geopoint_library()
 
-lib.GeoToNed.argtypes = [ctypes.c_double,
-                         ctypes.c_double,
-                         ctypes.c_double,
+lib.GeoToNed.argtypes = [SPointGeo,
                          SPointGeo,
                          ctypes.POINTER(SPointNED)]
 lib.GeoToNed.restype = None
 # -----------------------
-lib.NedToGeo.argtypes = [ctypes.c_double,
-                         ctypes.c_double,
-                         ctypes.c_double,
+lib.NedToGeo.argtypes = [SPointGeo,
                          SPointNED,
                          ctypes.POINTER(SPointGeo)]
 lib.NedToGeo.restype = None
@@ -69,9 +70,7 @@ def run_stress_test():
     lat0_val = 33.0202
     lon0_val = 35.478
     alt0_val = 0
-    c_lat0 = ctypes.c_double(lat0_val)
-    c_lon0 = ctypes.c_double(lon0_val)
-    c_alt0 = ctypes.c_double(alt0_val)
+    origin = SPointGeo(lat0_val, lon0_val, alt0_val)
 
     results_data = []
 
@@ -88,9 +87,7 @@ def run_stress_test():
         )
         # Test
         res_ned = SPointNED()
-        lib.GeoToNed(c_lat0,
-                     c_lon0,
-                     c_alt0,
+        lib.GeoToNed(origin,
                      input_geo,
                      ctypes.byref(res_ned))
 
@@ -120,9 +117,7 @@ def run_stress_test():
         )
         # Test
         res_geo = SPointGeo()
-        lib.NedToGeo(c_lat0,
-                     c_lon0,
-                     c_alt0,
+        lib.NedToGeo(origin,
                      input_ned,
                      ctypes.byref(res_geo))
         # Error Calculation (Degrees -> Meters Approximation)

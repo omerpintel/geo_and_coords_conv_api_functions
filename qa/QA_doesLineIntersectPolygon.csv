@@ -1,0 +1,12 @@
+Description,Polygon Vertices (North/East in meters),Start Point North (m),Start Point East (m),Azimuth (deg from North),Length (m),Expected Result,Expected Error Code
+Starts inside polygon and exits north,"(0,0) (0,10) (10,10) (10,0)",5,5,0,100,TRUE,OK
+Short ray entirely within polygon,"(0,0) (0,10) (10,10) (10,0)",5,5,0,1,TRUE,OK
+Ray goes north just outside west edge,"(0,0) (0,10) (10,10) (10,0)",-5,-0.1,0,10,FALSE,OK
+Ray lies exactly on west edge,"(0,0) (0,10) (10,10) (10,0)",-5,0,0,10,TRUE,OK
+Azimuth 90 (East) crosses west edge,"(0,0) (0,10) (10,10) (10,0)",5,-5,90,20,TRUE,OK
+Ray travels south over U-shape opening without touching solid,"(0,0) (10,0) (10,10) (7,10) (7,3) (3,3) (3,10) (0,10)",5,15,180,4,FALSE,OK
+Ray enters bay and hits inner wall,"(0,0) (10,0) (10,10) (7,10) (7,3) (3,3) (3,10) (0,10)",5,5,180,5,TRUE,OK
+Ray passes through U opening and stops before back wall,"(0,0) (10,0) (10,10) (7,10) (7,3) (3,3) (3,10) (0,10)",5,12,180,6,FALSE,OK
+Null polygon pointer,NULL,0,0,0,10,TRUE,POLYGON_IS_NULL_PTR
+Zero length ray is not allowed,"(0,0) (0,10) (10,10) (10,0)",-5,5,0,0,TRUE,MAX_LENGTH_LESS_OR_EQUAL_TO_ZERO
+Polygon with fewer than 3 points,"(0,0) (0,10)",0,0,0,10,TRUE,POLYGON_WITH_LESS_THAN_3_POINTS

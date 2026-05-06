@@ -30,19 +30,26 @@ void isInsidePolygon(const SPointNE* polygon, uint16_t pointCount, const SPointN
     
     COV_POINT(0);
 
+    // Guard against null output pointers - write fail-safe defaults to whichever is valid
+    if (outResult == nullptr || resultState == nullptr) {
+        if (outResult != nullptr)  { *outResult = true; }
+        if (resultState != nullptr) { *resultState = EIsInsideResult::IS_INSIDE_OUTPUT_PTR_IS_NULL; }
+        return;
+    }
+
     // Default initialization
     *outResult = true;
-    *resultState = EResultState::OK;
+    *resultState = EIsInsideResult::IS_INSIDE_OK;
 
     // 1. Validation Logic
     if (polygon == nullptr) {
         COV_POINT(1);
-        *resultState = EResultState::POLYGON_IS_NULL_PTR;
+        *resultState = EIsInsideResult::IS_INSIDE_POLYGON_IS_NULL_PTR;
         return;
     }
     if (pointCount < 3) {
         COV_POINT(2);
-        *resultState = EResultState::POLYGON_WITH_LESS_THAN_3_POINTS;
+        *resultState = EIsInsideResult::IS_INSIDE_POLYGON_WITH_LESS_THAN_3_POINTS;
         return;
     }
 
@@ -114,28 +121,35 @@ void doesLineIntersectPolygon(const SPointNE* polygon, uint16_t pointCount, cons
     
     COV_POINT(0);
 
+    // Guard against null output pointers - write fail-safe defaults to whichever is valid
+    if (outResult == nullptr || resultState == nullptr) {
+        if (outResult != nullptr)  { *outResult = true; }
+        if (resultState != nullptr) { *resultState = ELineIntersectResult::LINE_INTERSECT_OUTPUT_PTR_IS_NULL; }
+        return;
+    }
+
     *outResult = true;
-    *resultState = EResultState::OK;
+    *resultState = ELineIntersectResult::LINE_INTERSECT_OK;
 
     // 1. Validation
     if (polygon == nullptr) {
         COV_POINT(1);
-        *resultState = EResultState::POLYGON_IS_NULL_PTR;
+        *resultState = ELineIntersectResult::LINE_INTERSECT_POLYGON_IS_NULL_PTR;
         return;
     }
     if (pointCount < 3) {
         COV_POINT(2);
-        *resultState = EResultState::POLYGON_WITH_LESS_THAN_3_POINTS;
+        *resultState = ELineIntersectResult::LINE_INTERSECT_POLYGON_WITH_LESS_THAN_3_POINTS;
         return;
     }
     if (maxLength <= 0.0f) {
         COV_POINT(3);
-        *resultState = EResultState::MAX_LENGTH_LESS_OR_EQUAL_TO_ZERO;
+        *resultState = ELineIntersectResult::LINE_INTERSECT_MAX_LENGTH_LESS_OR_EQUAL_TO_ZERO;
         return;
     }
 
     uint8_t tempResult = false;
-    uint8_t tempResultState = EResultState::OK;
+    uint8_t tempResultState = EIsInsideResult::IS_INSIDE_OK;
 
     // If the Start Point is inside the polygon, it is an immediate intersection.
     isInsidePolygon(polygon, pointCount, testPoint, 0.0, &tempResult, &tempResultState);
@@ -149,8 +163,8 @@ void doesLineIntersectPolygon(const SPointNE* polygon, uint16_t pointCount, cons
     // NED System: Azimuth 0 is North (+X), 90 is East (+Y).
     double thetaRad = azimuthDegrees * (PI / 180.0);
     SPointNE endPoint;
-    endPoint.north = testPoint.north + maxLength * std::cos(thetaRad);
-    endPoint.east = testPoint.east + maxLength * std::sin(thetaRad);
+    endPoint.north = testPoint.north + static_cast<float>(maxLength * std::cos(thetaRad));
+    endPoint.east = testPoint.east + static_cast<float>(maxLength * std::sin(thetaRad));
 
     // Check Intersection with all Polygon Edges
     for (size_t i = 0; i < pointCount; ++i) {
@@ -170,18 +184,18 @@ void doesLineIntersectPolygon(const SPointNE* polygon, uint16_t pointCount, cons
 }
 
 
-void GeoToNed(const double originLatitudeDeg, const double originLongitudeDeg, const double originAltitude, const SPointGeo geoPoint, SPointNED* resNedPoint)
+void GeoToNed(const SPointGeo origin, const SPointGeo geoPoint, SPointNED* resNedPoint)
 {
     SPointECEF pointEcef = GeoToEcef(geoPoint);
-    SPointNED pointNed = EcefToNed(originLatitudeDeg, originLongitudeDeg, originAltitude, pointEcef);
+    SPointNED pointNed = EcefToNed(origin.latitudeDeg, origin.longitudeDeg, origin.altitude, pointEcef);
 
     *resNedPoint = pointNed;
 }
 
 
-void NedToGeo(const double originLatitudeDeg, const double originLongitudeDeg, const double originAltitude, const SPointNED nedPoint, SPointGeo* resGeopoint)
+void NedToGeo(const SPointGeo origin, const SPointNED nedPoint, SPointGeo* resGeopoint)
 {
-    SPointECEF pointEcef = NedToEcef(originLatitudeDeg, originLongitudeDeg, originAltitude, nedPoint);
+    SPointECEF pointEcef = NedToEcef(origin.latitudeDeg, origin.longitudeDeg, origin.altitude, nedPoint);
     SPointGeo pointGeo = EcefToGeo(pointEcef);
 
     *resGeopoint = pointGeo;

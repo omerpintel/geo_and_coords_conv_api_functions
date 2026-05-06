@@ -4,6 +4,9 @@
 #include <cstdlib> 
 #include <cassert> 
 
+#ifdef _MSC_VER
+#pragma warning(disable: 4702) // unreachable code (after std::abort)
+#endif
 
 #ifdef NDEBUG
 extern void LINKER_ERROR_DYNAMIC_MEMORY_ALLOCATION_IS_FORBIDDEN();

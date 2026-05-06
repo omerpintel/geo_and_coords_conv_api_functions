@@ -1,0 +1,170 @@
+{
+    "version": 3,
+    "cmakeMinimumRequired": {
+        "major": 3,
+        "minor": 21,
+        "patch": 0
+    },
+    "configurePresets": [
+        {
+            "name": "base",
+            "hidden": true,
+            "binaryDir": "${sourceDir}/out/build/${presetName}",
+            "installDir": "${sourceDir}/out/install/${presetName}"
+        },
+        {
+            "name": "windows-debug",
+            "displayName": "Windows x64 Debug",
+            "inherits": "base",
+            "generator": "Ninja",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "CMAKE_CXX_COMPILER": "cl"
+            },
+            "condition": {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Windows"
+            }
+        },
+        {
+            "name": "windows-release",
+            "displayName": "Windows x64 Release",
+            "inherits": "base",
+            "generator": "Ninja",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "RelWithDebInfo",
+                "CMAKE_CXX_COMPILER": "cl"
+            },
+            "condition": {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Windows"
+            }
+        },
+        {
+            "name": "windows-debug-vs",
+            "displayName": "Windows x64 Debug (Visual Studio)",
+            "inherits": "base",
+            "generator": "Visual Studio 17 2022",
+            "architecture": {
+                "value": "x64",
+                "strategy": "set"
+            },
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug"
+            },
+            "condition": {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Windows"
+            }
+        },
+        {
+            "name": "linux-debug",
+            "displayName": "Linux GCC Debug",
+            "inherits": "base",
+            "generator": "Ninja",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "CMAKE_CXX_COMPILER": "g++"
+            },
+            "condition": {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Linux"
+            }
+        },
+        {
+            "name": "linux-release",
+            "displayName": "Linux GCC Release",
+            "inherits": "base",
+            "generator": "Ninja",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "RelWithDebInfo",
+                "CMAKE_CXX_COMPILER": "g++"
+            },
+            "condition": {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Linux"
+            }
+        },
+        {
+            "name": "linux-asan",
+            "displayName": "Linux GCC Debug + ASan",
+            "inherits": "linux-debug",
+            "cacheVariables": {
+                "ENABLE_ASAN": "ON"
+            }
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "windows-debug",
+            "displayName": "Windows Debug Build",
+            "configurePreset": "windows-debug"
+        },
+        {
+            "name": "windows-release",
+            "displayName": "Windows Release Build",
+            "configurePreset": "windows-release"
+        },
+        {
+            "name": "windows-debug-vs",
+            "displayName": "Windows Debug Build (VS)",
+            "configurePreset": "windows-debug-vs",
+            "configuration": "Debug"
+        },
+        {
+            "name": "linux-debug",
+            "displayName": "Linux Debug Build",
+            "configurePreset": "linux-debug"
+        },
+        {
+            "name": "linux-release",
+            "displayName": "Linux Release Build",
+            "configurePreset": "linux-release"
+        },
+        {
+            "name": "linux-asan",
+            "displayName": "Linux ASan Build",
+            "configurePreset": "linux-asan"
+        }
+    ],
+    "testPresets": [
+        {
+            "name": "windows-debug",
+            "displayName": "Windows Debug Tests",
+            "configurePreset": "windows-debug",
+            "output": {
+                "outputOnFailure": true
+            }
+        },
+        {
+            "name": "windows-debug-vs",
+            "displayName": "Windows Debug Tests (VS)",
+            "configurePreset": "windows-debug-vs",
+            "configuration": "Debug",
+            "output": {
+                "outputOnFailure": true
+            }
+        },
+        {
+            "name": "linux-debug",
+            "displayName": "Linux Debug Tests",
+            "configurePreset": "linux-debug",
+            "output": {
+                "outputOnFailure": true
+            }
+        },
+        {
+            "name": "linux-asan",
+            "displayName": "Linux ASan Tests",
+            "configurePreset": "linux-asan",
+            "output": {
+                "outputOnFailure": true
+            }
+        }
+    ]
+}

@@ -7,6 +7,7 @@ import math
 import folium
 
 # Import shared logic
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'shared'))
 import geo_utils
 from geo_utils import SPointNE, EResultState
 

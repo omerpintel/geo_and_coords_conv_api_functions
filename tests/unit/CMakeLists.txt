@@ -1,0 +1,8 @@
+add_executable(geo_unit_tests geometric_test.cpp)
+target_link_libraries(geo_unit_tests PRIVATE api_functions)
+
+add_executable(coords_conv_tests coords_conv_test.cpp)
+target_link_libraries(coords_conv_tests PRIVATE api_functions_static)
+
+add_test(NAME GeoTests COMMAND geo_unit_tests)
+add_test(NAME CoordsConvTests COMMAND coords_conv_tests)

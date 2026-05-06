@@ -8,5 +8,28 @@ x64/
 Debug/
 Release/
 out/
+build/
 __pycache__/
-*.html
+html_pages/
+
+# CMake generated
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+compile_commands.json
+
+# Compiled objects
+*.o
+*.obj
+*.pdb
+*.ilk
+*.exp
+
+# Shared libraries
+*.dll
+*.so
+*.dylib
+
+# Test artifacts
+test_results_geo.log
+test_report.html

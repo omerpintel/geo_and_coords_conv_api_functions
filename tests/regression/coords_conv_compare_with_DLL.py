@@ -2,11 +2,15 @@ import pymap3d as pm
 import ctypes
 import math
 import random
+import sys
+import os
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'shared'))
 
 import geo_utils
 
 
 class SPointGeo(ctypes.Structure):
+    _pack_ = 1
     _fields_ = [("latitudeDeg", ctypes.c_double),
                 ("longitudeDeg", ctypes.c_double),
                 ("altitude", ctypes.c_double)]
@@ -16,6 +20,7 @@ class SPointGeo(ctypes.Structure):
 
 
 class SPointNED(ctypes.Structure):
+    _pack_ = 1
     # Adjust field names to match your C++ struct (e.g., x, y, z or north, east, down)
     _fields_ = [("north", ctypes.c_double),
                 ("east", ctypes.c_double),
@@ -26,16 +31,12 @@ class SPointNED(ctypes.Structure):
 
 lib = geo_utils.load_geopoint_library()
 
-lib.GeoToNed.argtypes = [ctypes.c_double,
-                         ctypes.c_double,
-                         ctypes.c_double,
+lib.GeoToNed.argtypes = [SPointGeo,
                          SPointGeo,
                          ctypes.POINTER(SPointNED)]
 lib.GeoToNed.restype = None
 # -----------------------
-lib.NedToGeo.argtypes = [ctypes.c_double,
-                         ctypes.c_double,
-                         ctypes.c_double,
+lib.NedToGeo.argtypes = [SPointGeo,
                          SPointNED,
                          ctypes.POINTER(SPointGeo)]
 lib.NedToGeo.restype = None
@@ -64,14 +65,10 @@ def test_geo_to_ned():
     ecef_x, ecef_y, ecef_z = pm.geodetic2ecef(target_geo.latitudeDeg, target_geo.longitudeDeg, target_geo.altitude)
 
     # B. Call C++ API
-    c_lat0 = ctypes.c_double(lat0)
-    c_lon0 = ctypes.c_double(lon0)
-    c_alt0 = ctypes.c_double(alt0)
+    origin = SPointGeo(lat0, lon0, alt0)
 
     result_ned = SPointNED()
-    lib.GeoToNed(c_lat0,
-                 c_lon0,
-                 c_alt0,
+    lib.GeoToNed(origin,
                  target_geo,
                  ctypes.byref(result_ned))
 
@@ -108,14 +105,10 @@ def test_ned_to_geo():
     ecef_x,ecef_y,ecef_z = pm.ned2ecef(target_ned.north, target_ned.east, target_ned.down,lat0,lon0,0)
 
     # B. Call C++ API
-    c_lat0 = ctypes.c_double(lat0)
-    c_lon0 = ctypes.c_double(lon0)
-    c_alt0 = ctypes.c_double(alt0)
+    origin = SPointGeo(lat0, lon0, alt0)
 
     result_geo = SPointGeo()
-    lib.NedToGeo(c_lat0,
-                c_lon0,
-                c_alt0,
+    lib.NedToGeo(origin,
                 target_ned,
                 ctypes.byref(result_geo))
 
@@ -153,21 +146,15 @@ def test_geo_to_ned_to_geo():
 
 
     # B. Call C++ API
-    c_lat0 = ctypes.c_double(lat0)
-    c_lon0 = ctypes.c_double(lon0)
-    c_alt0 = ctypes.c_double(alt0)
+    origin = SPointGeo(lat0, lon0, alt0)
 
     result_ned = SPointNED()
-    lib.GeoToNed(c_lat0,
-                 c_lon0,
-                 c_alt0,
+    lib.GeoToNed(origin,
                  target_geo,
                  ctypes.byref(result_ned))
 
     result_geo = SPointGeo()
-    lib.NedToGeo(c_lat0,
-                 c_lon0,
-                 c_alt0,
+    lib.NedToGeo(origin,
                  result_ned,
                  ctypes.byref(result_geo))
 

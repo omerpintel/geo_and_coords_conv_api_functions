@@ -1,0 +1,15 @@
+Description,Polygon Vertices (North/East in meters),Test Point North (m),Test Point East (m),Radius (m),Expected Result,Expected Error Code
+Point at centre of 10x10m square,"(0,0) (0,10) (10,10) (10,0)",5,5,0,TRUE,OK
+Point well outside polygon,"(0,0) (0,10) (10,10) (10,0)",20,5,0,FALSE,OK
+Boundary counts as inside,"(0,0) (0,10) (10,10) (10,0)",0,5,0,TRUE,OK
+Point 1m outside but 2m radius reaches edge,"(0,0) (0,10) (10,10) (10,0)",-1,5,2,TRUE,OK
+Point 5m outside and 2m radius does not reach,"(0,0) (0,10) (10,10) (10,0)",-5,5,2,FALSE,OK
+Exactly on the east edge,"(0,0) (0,10) (10,10) (10,0)",5,10,0,TRUE,OK
+Far from polygon bounding box,"(0,0) (0,10) (10,10) (10,0)",20,20,1,FALSE,OK
+Point in empty bay of U-shape,"(0,0) (10,0) (10,10) (7,10) (7,3) (3,3) (3,10) (0,10)",5,8,0,FALSE,OK
+2.1m radius hits inner walls of U-shape,"(0,0) (10,0) (10,10) (7,10) (7,3) (3,3) (3,10) (0,10)",5,8,2.1,TRUE,OK
+1.9m radius fits in 2m gap of U-shape,"(0,0) (10,0) (10,10) (7,10) (7,3) (3,3) (3,10) (0,10)",5,8,1.9,FALSE,OK
+Exact vertex of triangle counts as inside,"(0,0) (10,2) (0,4)",10,2,0,TRUE,OK
+Point just off tip but radius catches it,"(0,0) (10,2) (0,4)",10.1,2,0.2,TRUE,OK
+Null polygon pointer,NULL,5,5,0,TRUE,POLYGON_IS_NULL_PTR
+Polygon with fewer than 3 points,"(0,0) (0,10)",5,5,0,TRUE,POLYGON_WITH_LESS_THAN_3_POINTS

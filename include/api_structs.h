@@ -34,15 +34,28 @@ struct SPointNE {
 };
 
 /**
- * @enum ResultState
- * @brief determines the status of the result
+ * @enum EIsInsideResult
+ * @brief Result state for isInsidePolygon
  */
-enum EResultState : uint8_t
+enum EIsInsideResult : uint8_t
 {
-	OK = 0,
-	POLYGON_WITH_LESS_THAN_3_POINTS = 1,
-	POLYGON_IS_NULL_PTR = 2,
-	MAX_LENGTH_LESS_OR_EQUAL_TO_ZERO = 3
+	IS_INSIDE_OK = 0,
+	IS_INSIDE_POLYGON_IS_NULL_PTR = 1,
+	IS_INSIDE_POLYGON_WITH_LESS_THAN_3_POINTS = 2,
+	IS_INSIDE_OUTPUT_PTR_IS_NULL = 3
+};
+
+/**
+ * @enum ELineIntersectResult
+ * @brief Result state for doesLineIntersectPolygon
+ */
+enum ELineIntersectResult : uint8_t
+{
+	LINE_INTERSECT_OK = 0,
+	LINE_INTERSECT_POLYGON_IS_NULL_PTR = 1,
+	LINE_INTERSECT_POLYGON_WITH_LESS_THAN_3_POINTS = 2,
+	LINE_INTERSECT_MAX_LENGTH_LESS_OR_EQUAL_TO_ZERO = 3,
+	LINE_INTERSECT_OUTPUT_PTR_IS_NULL = 4
 };
 
 #pragma pack(pop)

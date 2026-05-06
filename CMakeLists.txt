@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.15)
+cmake_minimum_required(VERSION 3.21)
 project(ApiFunctions CXX)
 
 # Set C++ standard
@@ -8,6 +8,18 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+
+# --- Sanitizer Options ---
+option(ENABLE_ASAN "Enable AddressSanitizer for memory error detection" OFF)
+
+if(ENABLE_ASAN)
+    if(MSVC)
+        add_compile_options(/fsanitize=address)
+    else()
+        add_compile_options(-fsanitize=address -fno-omit-frame-pointer)
+        add_link_options(-fsanitize=address)
+    endif()
+endif()
 
 # Define a specific header file to be forced into every compilation unit.
 # safty rules preventing heap allocation
@@ -28,4 +40,6 @@ else()
 endif()
 
 add_subdirectory(src)
-add_subdirectory(tests)
+
+enable_testing()
+add_subdirectory(tests/unit)

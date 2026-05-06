@@ -12,20 +12,30 @@ class SPointNE(ctypes.Structure):
     def __repr__(self):
         return f"SPointNE(N={self.north:.2f}, E={self.east:.2f})"
 
-class EResultState(IntEnum):
-    OK = 0
-    POLYGON_WITH_LESS_THAN_3_POINTS = 1
-    POLYGON_IS_NULL_PTR = 2
-    MAX_LENGTH_LESS_OR_EQUAL_TO_ZERO = 3
+class EIsInsideResult(IntEnum):
+    IS_INSIDE_OK = 0
+    IS_INSIDE_POLYGON_IS_NULL_PTR = 1
+    IS_INSIDE_POLYGON_WITH_LESS_THAN_3_POINTS = 2
+    IS_INSIDE_OUTPUT_PTR_IS_NULL = 3
+
+class ELineIntersectResult(IntEnum):
+    LINE_INTERSECT_OK = 0
+    LINE_INTERSECT_POLYGON_IS_NULL_PTR = 1
+    LINE_INTERSECT_POLYGON_WITH_LESS_THAN_3_POINTS = 2
+    LINE_INTERSECT_MAX_LENGTH_LESS_OR_EQUAL_TO_ZERO = 3
+    LINE_INTERSECT_OUTPUT_PTR_IS_NULL = 4
+
+# Legacy alias for visualization scripts
+EResultState = EIsInsideResult
 
 # --- 2. Shared Library Loader ---
 def load_geopoint_library():
     """Finds and loads the api_functions DLL."""
     lib_name = "api_functions.dll" if sys.platform.startswith("win32") else "libapi_functions.so"
     
-    # Go up one level from 'scripts' to project root
+    # Go up two levels from 'tests/shared' to project root
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    project_root = os.path.dirname(script_dir) 
+    project_root = os.path.dirname(os.path.dirname(script_dir)) 
 
     search_paths = [
         os.path.join(project_root, "out", "build", "WSL-GCC-Debug", "bin"),

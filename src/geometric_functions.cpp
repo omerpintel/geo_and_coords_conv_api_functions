@@ -3,8 +3,8 @@
 
 // Checks if two double values are effectively equal.
 // Uses a scaled epsilon comparison to handle floating-point precision errors.
-bool areAlmostEqual(const float a, const float b) {
-    return std::fabs(a - b) <= EPSILON * 100.0f;
+bool areAlmostEqual(const double a, const double b) {
+    return std::fabs(a - b) <= EPSILON * 100.0;
 }
 
 // Calculates the squared Euclidean distance between two points.
@@ -18,7 +18,7 @@ double getDistSq(const SPointNE& a, const SPointNE& b) {
 // Calculates the squared shortest distance
 // from a point to a line segment.
 double getDistToSegmentSquared(const SPointNE& p, const SPointNE& a, const SPointNE& b) {
-    const float l2 = getDistSq(a, b);
+    const double l2 = getDistSq(a, b);
 
     // If start and end points are identical, return distance to point 'a'
     if (l2 == 0.0) return getDistSq(p, a);
@@ -26,7 +26,7 @@ double getDistToSegmentSquared(const SPointNE& p, const SPointNE& a, const SPoin
     // Calculate projection factor t represents the relative position of the projection on the infinite line:
     // 0.0 = Start (a), 1.0 = End (b).
     // t = [(p-a) . (b-a)] / |b-a|^2
-    float t = ((p.north - a.north) * (b.north - a.north) +
+    double t = ((p.north - a.north) * (b.north - a.north) +
         (p.east - a.east) * (b.east - a.east)) / l2;
 
     // Clamp t to the segment [0, 1] to handle points beyond endpoints
@@ -34,8 +34,8 @@ double getDistToSegmentSquared(const SPointNE& p, const SPointNE& a, const SPoin
     else if (t > 1.0) t = 1.0;
 
     SPointNE projection = {
-        a.north + t * (b.north - a.north),
-        a.east + t * (b.east - a.east)
+        static_cast<float>(a.north + t * (b.north - a.north)),
+        static_cast<float>(a.east + t * (b.east - a.east))
     };
 
     return getDistSq(p, projection);
@@ -44,8 +44,8 @@ double getDistToSegmentSquared(const SPointNE& p, const SPointNE& a, const SPoin
 // Checks if point q lies on the line segment pr.
 // Assumes points are already known to be collinear.
 bool onSegment(const SPointNE& p, const SPointNE& q, const SPointNE& r) {
-    return q.north <= MAX(p.north, r.north) && q.north >= MIN(p.north, r.north) &&
-        q.east <= MAX(p.east, r.east) && q.east >= MIN(p.east, r.east);
+    return q.north <= std::max(p.north, r.north) && q.north >= std::min(p.north, r.north) &&
+        q.east <= std::max(p.east, r.east) && q.east >= std::min(p.east, r.east);
 }
 
 // Determines the orientation of the ordered triplet (p, q, r).
