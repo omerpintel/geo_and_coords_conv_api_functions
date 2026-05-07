@@ -392,11 +392,10 @@ void verify_full_coverage(int total_expected, ECovFuncID funcID, std::string fun
 
 int main() {
 #if defined(_DEBUG) || !defined(NDEBUG)
-
 #ifdef _WIN32
     ResetCoverage();
 #endif
-
+#endif
 
     // 1. Test isInsidePolygon
     test_is_inside();
@@ -415,7 +414,5 @@ int main() {
     if (g_logFile.is_open()) g_logFile.close();
 
     return (g_tests_failed == 0) ? 0 : 1;
-#endif // DEBUG
-
 }
 

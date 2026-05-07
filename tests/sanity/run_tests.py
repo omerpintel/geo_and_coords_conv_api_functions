@@ -6,13 +6,15 @@ Cross-platform script that builds, tests, and generates an HTML validation repor
 Usage:
     python run_tests.py                    # Auto-detect platform, Debug build
     python run_tests.py --config Release   # Release build
+    python run_tests.py --all-configs      # Run both Debug and Release
     python run_tests.py --asan             # Enable AddressSanitizer (Linux/macOS only)
     python run_tests.py --build-dir ./build  # Custom build directory
 
 Outputs:
-    test_report.html  — Full HTML validation report
-    Exit code 0       — All checks passed
-    Exit code 1       — One or more checks failed
+    test_reports/test_report.html  - Full HTML validation report
+    test_reports/test_results_geo.log - Test binary log output
+    Exit code 0       - All checks passed
+    Exit code 1       - One or more checks failed
 """
 
 import subprocess
@@ -189,7 +191,7 @@ def configure_and_build(project_root: str, build_dir: str, config: str, asan: bo
 # Test Phase
 # ============================================================================
 
-def run_test_binary(binary_path: str, suite_name: str) -> TestSuite:
+def run_test_binary(binary_path: str, suite_name: str, reports_dir: str = None) -> TestSuite:
     """Run a test binary and parse its output."""
     suite = TestSuite(name=suite_name, binary=binary_path)
 
@@ -198,9 +200,12 @@ def run_test_binary(binary_path: str, suite_name: str) -> TestSuite:
         suite.total_failed = 1
         return suite
 
+    # Run from the binary's own directory (so DLL is found), then move logs to reports dir
+    binary_dir = os.path.dirname(binary_path)
+
     print(f"\n  Running: {suite_name}")
     start = time.time()
-    rc, stdout, stderr = run_command([binary_path])
+    rc, stdout, stderr = run_command([binary_path], cwd=binary_dir)
     suite.duration_sec = time.time() - start
     suite.raw_output = stdout + "\n" + stderr
 
@@ -222,6 +227,14 @@ def run_test_binary(binary_path: str, suite_name: str) -> TestSuite:
 
     status = "PASS" if suite.total_failed == 0 and rc == 0 else "FAIL"
     print(f"  Result:  [{status}] {suite.total_passed} passed, {suite.total_failed} failed ({suite.duration_sec:.1f}s)")
+
+    # Move any .log files from binary dir to reports dir
+    if reports_dir:
+        import glob
+        for log_file in glob.glob(os.path.join(binary_dir, "*.log")):
+            import shutil
+            dest = os.path.join(reports_dir, os.path.basename(log_file))
+            shutil.move(log_file, dest)
 
     return suite
 
@@ -496,6 +509,8 @@ def main():
     parser = argparse.ArgumentParser(description="GeoPoint CI Test Suite Runner")
     parser.add_argument("--config", default="Debug", choices=["Debug", "Release", "RelWithDebInfo"],
                         help="CMake build configuration (default: Debug)")
+    parser.add_argument("--all-configs", action="store_true",
+                        help="Run both Debug and Release configurations")
     parser.add_argument("--asan", action="store_true",
                         help="Enable AddressSanitizer (Linux/macOS only)")
     parser.add_argument("--build-dir", default=None,
@@ -504,16 +519,137 @@ def main():
                         help="Output HTML report path (default: test_report.html)")
     args = parser.parse_args()
 
+    if args.all_configs:
+        return run_all_configs(args)
+
+    return run_single_config(args)
+
+
+def ensure_reports_dir(project_root: str) -> str:
+    """Create and return the test_reports/ directory path."""
+    reports_dir = os.path.join(project_root, "test_reports")
+    os.makedirs(reports_dir, exist_ok=True)
+    return reports_dir
+
+
+def run_all_configs(args):
+    """Run the CI suite for both Debug and Release configurations."""
+    configs = ["Debug", "Release"]
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    project_root = os.path.dirname(os.path.dirname(script_dir))
+    reports_dir = ensure_reports_dir(project_root)
+
+    print("=" * 60)
+    print("  GEOPOINT CI - MULTI-CONFIGURATION RUN")
+    print("=" * 60)
+    print(f"  Configurations: {', '.join(configs)}")
+    print(f"  Platform:       {platform.system()} {platform.release()}")
+    print(f"  Reports Dir:    {reports_dir}")
+    print(f"  ASan:           {'ON (Debug only)' if args.asan else 'OFF'}")
+    print()
+
+    overall_pass = True
+    results_summary = []
+
+    for config in configs:
+        print(f"\n{'#'*60}")
+        print(f"  CONFIGURATION: {config}")
+        print(f"{'#'*60}")
+
+        # Each config gets its own build dir and report
+        if args.build_dir:
+            build_dir = os.path.join(os.path.abspath(args.build_dir), config.lower())
+        else:
+            build_dir = os.path.join(project_root, "out", "build", f"ci-{config.lower()}")
+
+        report_name = f"test_report_{config.lower()}.html"
+        output_path = os.path.join(reports_dir, report_name)
+
+        # Only enable ASan for Debug builds
+        enable_asan = args.asan and config == "Debug"
+
+        report = ValidationReport(
+            timestamp=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            platform_info=f"{platform.system()} {platform.release()} ({platform.machine()})",
+            compiler_info="",
+            build_config=config,
+            asan_enabled=enable_asan,
+        )
+
+        # Build
+        report.build_result = configure_and_build(project_root, build_dir, config, enable_asan)
+
+        if not report.build_result.success:
+            print(f"\n  BUILD FAILED for {config} - cannot continue with tests.")
+            report.overall_pass = False
+            report.compiler_info = detect_compiler_info(build_dir)
+            generate_html_report(report, output_path)
+            results_summary.append((config, False, 0, 0, report_name))
+            overall_pass = False
+            continue
+
+        report.compiler_info = detect_compiler_info(build_dir)
+
+        # Run tests
+        print(f"\n{'='*60}")
+        print(f"  TEST PHASE ({config})")
+        print(f"{'='*60}")
+
+        geo_tests_bin = find_binary(build_dir, "geo_unit_tests")
+        coords_tests_bin = find_binary(build_dir, "coords_conv_tests")
+
+        geo_suite = run_test_binary(geo_tests_bin, f"Geometric Unit Tests ({config})", reports_dir=reports_dir)
+        coords_suite = run_test_binary(coords_tests_bin, f"Coordinate Conversion Tests ({config})", reports_dir=reports_dir)
+        report.test_suites = [geo_suite, coords_suite]
+
+        # DLL export validation
+        lib_path = find_library(build_dir)
+        if lib_path:
+            report.dll_exports, report.dll_exports_valid = validate_dll_exports(lib_path)
+        else:
+            report.dll_exports_valid = False
+
+        # Verdict for this config
+        all_tests_pass = all(s.total_failed == 0 for s in report.test_suites)
+        any_tests_ran = any((s.total_passed + s.total_failed) > 0 for s in report.test_suites)
+        report.overall_pass = report.build_result.success and all_tests_pass and any_tests_ran and report.dll_exports_valid
+
+        generate_html_report(report, output_path)
+
+        total_passed = sum(s.total_passed for s in report.test_suites)
+        total_failed = sum(s.total_failed for s in report.test_suites)
+        results_summary.append((config, report.overall_pass, total_passed, total_failed, report_name))
+
+        if not report.overall_pass:
+            overall_pass = False
+
+    # Final multi-config summary
+    print(f"\n{'='*60}")
+    print(f"  MULTI-CONFIGURATION SUMMARY")
+    print(f"{'='*60}")
+    for config, passed, tp, tf, report_file in results_summary:
+        status = "PASS" if passed else "FAIL"
+        print(f"  [{status}] {config:15s} - {tp} passed, {tf} failed  ({report_file})")
+    print(f"\n  Overall: {'PASS' if overall_pass else 'FAIL'}")
+    print(f"{'='*60}\n")
+
+    return 0 if overall_pass else 1
+
+
+def run_single_config(args):
+    """Run the CI suite for a single configuration (original behavior)."""
+
     # Resolve paths
     script_dir = os.path.dirname(os.path.abspath(__file__))
     project_root = os.path.dirname(os.path.dirname(script_dir))  # Up from tests/sanity/ to project root
+    reports_dir = ensure_reports_dir(project_root)
 
     if args.build_dir:
         build_dir = os.path.abspath(args.build_dir)
     else:
         build_dir = os.path.join(project_root, "out", "build", "ci")
 
-    output_path = os.path.join(project_root, args.output)
+    output_path = os.path.join(reports_dir, args.output)
 
     print("=" * 60)
     print("  GEOPOINT CI TEST SUITE")
@@ -537,7 +673,7 @@ def main():
     report.build_result = configure_and_build(project_root, build_dir, args.config, args.asan)
 
     if not report.build_result.success:
-        print("\n  BUILD FAILED — cannot continue with tests.")
+        print("\n  BUILD FAILED - cannot continue with tests.")
         report.overall_pass = False
         report.compiler_info = detect_compiler_info(build_dir)
         generate_html_report(report, output_path)
@@ -555,8 +691,8 @@ def main():
     coords_tests_bin = find_binary(build_dir, "coords_conv_tests")
 
     # Run each suite
-    geo_suite = run_test_binary(geo_tests_bin, "Geometric Unit Tests (isInsidePolygon + doesLineIntersectPolygon)")
-    coords_suite = run_test_binary(coords_tests_bin, "Coordinate Conversion & Robustness Tests")
+    geo_suite = run_test_binary(geo_tests_bin, "Geometric Unit Tests (isInsidePolygon + doesLineIntersectPolygon)", reports_dir=reports_dir)
+    coords_suite = run_test_binary(coords_tests_bin, "Coordinate Conversion & Robustness Tests", reports_dir=reports_dir)
 
     report.test_suites = [geo_suite, coords_suite]
 
@@ -572,7 +708,7 @@ def main():
         status = "PASS" if report.dll_exports_valid else "FAIL"
         print(f"  Result:  [{status}] {len(report.dll_exports)}/{len(EXPECTED_EXPORTS)} functions exported")
     else:
-        print("  Library not found — skipping export validation")
+        print("  Library not found - skipping export validation")
         report.dll_exports_valid = False
 
     # --- Phase 4: Overall Verdict ---
