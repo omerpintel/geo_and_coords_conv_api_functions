@@ -15,6 +15,8 @@
 enum ECovFuncID {
     IsInside = 0,
     Intersect = 1,
+    IsInsideGeo = 2,
+    IntersectGeo = 3,
     MAX_FUNCS
 };
 

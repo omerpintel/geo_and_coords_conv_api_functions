@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GeoPoint Validation Report</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f7fa; color: #333; padding: 2rem; }
+        .container { max-width: 1100px; margin: 0 auto; }
+        h1 { font-size: 1.8rem; margin-bottom: 0.5rem; }
+        h2 { font-size: 1.3rem; margin: 1.5rem 0 0.75rem; border-bottom: 2px solid #e1e4e8; padding-bottom: 0.4rem; }
+        h3 { font-size: 1.05rem; margin-bottom: 0.5rem; }
+        .header { background: #fff; border-radius: 8px; padding: 1.5rem 2rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 1.5rem; }
+        .header .overall { font-size: 1.4rem; margin-top: 0.5rem; }
+        .meta { font-size: 0.85rem; color: #666; font-weight: normal; }
+        .badge { display: inline-block; padding: 2px 10px; border-radius: 4px; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; }
+        .badge.pass { background: #d4edda; color: #155724; }
+        .badge.fail { background: #f8d7da; color: #721c24; }
+        .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin: 1rem 0; }
+        .summary-card { background: #fff; border-radius: 8px; padding: 1rem 1.2rem; box-shadow: 0 1px 3px rgba(0,0,0,0.08); text-align: center; }
+        .summary-card .value { font-size: 1.8rem; font-weight: 700; }
+        .summary-card .label { font-size: 0.8rem; color: #666; text-transform: uppercase; }
+        .summary-card.pass .value { color: #28a745; }
+        .summary-card.fail .value { color: #dc3545; }
+        .suite { background: #fff; border-radius: 8px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+        .coverage { padding: 0.5rem 0.8rem; border-radius: 4px; margin-bottom: 0.75rem; font-size: 0.9rem; }
+        .coverage.pass { background: #d4edda; }
+        .coverage.fail { background: #f8d7da; }
+        table.results { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+        table.results th { text-align: left; padding: 0.4rem 0.6rem; background: #f8f9fa; border-bottom: 1px solid #e1e4e8; }
+        table.results td { padding: 0.3rem 0.6rem; border-bottom: 1px solid #f0f0f0; }
+        table.results tr.fail td { background: #fff5f5; }
+        td.icon { width: 24px; text-align: center; }
+        tr.pass td.icon { color: #28a745; }
+        tr.fail td.icon { color: #dc3545; }
+        .detail { color: #dc3545; font-size: 0.8rem; }
+        .section { background: #fff; border-radius: 8px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+        details { margin-top: 0.5rem; }
+        summary { cursor: pointer; font-size: 0.9rem; color: #555; }
+        ul.log { list-style: none; font-family: 'Fira Code', monospace; font-size: 0.75rem; margin-top: 0.5rem; max-height: 200px; overflow-y: auto; background: #f8f9fa; padding: 0.5rem; border-radius: 4px; }
+        ul.log li { padding: 2px 0; white-space: pre-wrap; word-break: break-all; }
+        ul.log.error li { color: #dc3545; }
+        .info-table { width: 100%; font-size: 0.85rem; }
+        .info-table td { padding: 0.3rem 0.6rem; }
+        .info-table td:first-child { font-weight: 600; width: 180px; }
+        .footer { text-align: center; font-size: 0.75rem; color: #999; margin-top: 2rem; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>GeoPoint Validation Report</h1>
+        <p class="meta">2026-06-03 14:38:53 | Windows 11 (AMD64) | Unknown</p>
+        <p class="overall"><span class="badge fail">FAIL</span> Overall: FAILURES DETECTED</p>
+    </div>
+
+    <div class="summary-grid">
+        <div class="summary-card fail">
+            <div class="value">&#10008;</div>
+            <div class="label">Build</div>
+        </div>
+        <div class="summary-card pass">
+            <div class="value">0/0</div>
+            <div class="label">Tests Passed</div>
+        </div>
+        <div class="summary-card fail">
+            <div class="value">0/8</div>
+            <div class="label">API Exports</div>
+        </div>
+        <div class="summary-card pass">
+            <div class="value">0</div>
+            <div class="label">Warnings</div>
+        </div>
+    </div>
+
+    <h2>Build</h2>
+    <div class="section">
+        <table class="info-table">
+            <tr><td>Configuration</td><td>Debug</td></tr>
+            <tr><td>API Version</td><td>Unavailable</td></tr>
+            <tr><td>ASan Enabled</td><td>No</td></tr>
+            <tr><td>Duration</td><td>7.4s</td></tr>
+            <tr><td>Warnings</td><td>0</td></tr>
+            <tr><td>Errors</td><td>1</td></tr>
+        </table>
+        
+        <details><summary>Errors (1)</summary><ul class="log error"><li>CMake Error at CMakeLists.txt:3 (project):
+  Failed to run MSBuild command:
+
+    C:/Program Files/Microsoft Visual Studio/2022/Community/MSBuild/Current/Bin/amd64/MSBuild.exe
+
+  to get the value of VCTargetsPath:
+
+    MSBuild version 17.14.40+3e7442088 for .NET Framework
+    Build started 03/06/2026 14:38:56.
+    
+    Project "C:\GIT\geo_and_coords_conv_api_functions\out\build\version-check\CMakeFiles\4.3.2\VCTargetsPath.vcxproj" on node 1 (default targets).
+    PrepareForBuild:
+      Creating directory "VCTargetsPath\x64\Debug\".
+      Structured output is enabled. The formatting of compiler diagnostics will reflect the error hierarchy. See https://aka.ms/cpp/structured-output for more details.
+      Creating directory "C:\GIT\geo_and_coords_conv_api_functions\out\build\version-check\CMakeFiles\4.3.2\x64\Debug\".
+      Creating directory "VCTargetsPath\x64\Debug\VCTargetsPath.tlog\".
+    InitializeBuildStatus:
+      Creating "VCTargetsPath\x64\Debug\VCTargetsPath.tlog\unsuccessfulbuild" because "AlwaysCreate" was specified.
+      Touching "VCTargetsPath\x64\Debug\VCTargetsPath.tlog\unsuccessfulbuild".
+    C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB6003: The specified task executable "cmd.exe" could not be run. System.UnauthorizedAccessException: Access to the path 'C:\Users\GALJER\AppData\Local\Temp\1\MSBuildTemp\tmp26c870186ed34423976f49b31432a051.exec.cmd' is denied. [C:\GIT\geo_and_coords_conv_api_functions\out\build\version-check\CMakeFiles\4.3.2\VCTargetsPath.vcxproj]
+    C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB6003:    at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath) [C:\GIT\geo_and_coords_conv_api_functions\out\build\version-check\CMakeFiles\4.3.2\VCTargetsPath.vcxproj]
+    C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB6003:    at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost) [C:\GIT\geo_and_coords_conv_api_functions\out\build\version-check\CMakeFiles\4.3.2\VCTargetsPath.vcxproj]
+    C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB6003:    at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, FileOptions options) [C:\GIT\geo_and_coords_conv_api_functions\out\build\version-check\CMakeFiles\4.3.2\VCTargetsPath.vcxproj]
+    C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB6003:    at Microsoft.Build.Shared.FileUtilities.OpenWrite(String path, Boolean append, Encoding encoding) [C:\GIT\geo_and_coords_conv_api_functions\out\build\version-check\CMakeFiles\4.3.2\VCTargetsPath.vcxproj]
+    C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB6003:    at Microsoft.Build.Tasks.Exec.CreateTemporaryBatchFile() [C:\GIT\geo_and_coords_conv_api_functions\out\build\version-check\CMakeFiles\4.3.2\VCTargetsPath.vcxproj]
+    C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB6003:    at Microsoft.Build.Tasks.Exec.AddCommandLineCommands(CommandLineBuilderExtension commandLine) [C:\GIT\geo_and_coords_conv_api_functions\out\build\version-check\CMakeFiles\4.3.2\VCTargetsPath.vcxproj]
+    C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB6003:    at Microsoft.Build.Tasks.ToolTaskExtension.GenerateCommandLineCommands() [C:\GIT\geo_and_coords_conv_api_functions\out\build\version-check\CMakeFiles\4.3.2\VCTargetsPath.vcxproj]
+    C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB6003:    at Microsoft.Build.Utilities.ToolTask.Execute() [C:\GIT\geo_and_coords_conv_api_functions\out\build\version-check\CMakeFiles\4.3.2\VCTargetsPath.vcxproj]
+    Done Building Project "C:\GIT\geo_and_coords_conv_api_functions\out\build\version-check\CMakeFiles\4.3.2\VCTargetsPath.vcxproj" (default targets) -- FAILED.
+    
+    Build FAILED.
+    
+    "C:\GIT\geo_and_coords_conv_api_functions\out\build\version-check\CMakeFiles\4.3.2\VCTargetsPath.vcxproj" (default target) (1) ->
+    (PostBuildEvent target) -> 
+      C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB6003: The specified task executable "cmd.exe" could not be run. System.UnauthorizedAccessException: Access to the path 'C:\Users\GALJER\AppData\Local\Temp\1\MSBuildTemp\tmp26c870186ed34423976f49b31432a051.exec.cmd' is denied. [C:\GIT\geo_and_coords_conv_api_functions\out\build\version-check\CMakeFiles\4.3.2\VCTargetsPath.vcxproj]
+    C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB6003:    at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath) [C:\GIT\geo_and_coords_conv_api_functions\out\build\version-check\CMakeFiles\4.3.2\VCTargetsPath.vcxproj]
+    C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB6003:    at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost) [C:\GIT\geo_and_coords_conv_api_functions\out\build\version-check\CMakeFiles\4.3.2\VCTargetsPath.vcxproj]
+    C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB6003:    at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, FileOptions options) [C:\GIT\geo_and_coords_conv_api_functions\out\build\version-check\CMakeFiles\4.3.2\VCTargetsPath.vcxproj]
+    C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB6003:    at Microsoft.Build.Shared.FileUtilities.OpenWrite(String path, Boolean append, Encoding encoding) [C:\GIT\geo_and_coords_conv_api_functions\out\build\version-check\CMakeFiles\4.3.2\VCTargetsPath.vcxproj]
+    C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB6003:    at Microsoft.Build.Tasks.Exec.CreateTemporaryBatchFile() [C:\GIT\geo_and_coords_conv_api_functions\out\build\version-check\CMakeFiles\4.3.2\VCTargetsPath.vcxproj]
+    C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB6003:    at Microsoft.Build.Tasks.Exec.AddCommandLineCommands(CommandLineBuilderExtension commandLine) [C:\GIT\geo_and_coords_conv_api_functions\out\build\version-check\CMakeFiles\4.3.2\VCTargetsPath.vcxproj]
+    C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB6003:    at Microsoft.Build.Tasks.ToolTaskExtension.GenerateCommandLineCommands() [C:\GIT\geo_and_coords_conv_api_functions\out\build\version-check\CMakeFiles\4.3.2\VCTargetsPath.vcxproj]
+    C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB6003:    at Microsoft.Build.Utilities.ToolTask.Execute() [C:\GIT\geo_and_coords_conv_api_functions\out\build\version-check\CMakeFiles\4.3.2\VCTargetsPath.vcxproj]
+    
+        0 Warning(s)
+        1 Error(s)
+    
+    Time Elapsed 00:00:00.36
+    
+
+  Exit code: 1
+
+
+
+</li></ul></details>
+    </div>
+
+    <h2>Test Suites</h2>
+    
+
+    <h2>DLL/Shared Library Exports</h2>
+    <div class="section">
+        <p><span class="badge fail">FAIL</span> All expected API functions exported</p>
+        <table class="results" style="margin-top: 0.75rem;">
+            <thead><tr><th></th><th>Function</th></tr></thead>
+            <tbody><tr class="fail"><td class="icon">&#10008;</td><td>GetApiVersionString</td></tr>
+<tr class="fail"><td class="icon">&#10008;</td><td>GetApiVersionNumbers</td></tr>
+<tr class="fail"><td class="icon">&#10008;</td><td>isInsidePolygonNED</td></tr>
+<tr class="fail"><td class="icon">&#10008;</td><td>doesLineIntersectPolygonNED</td></tr>
+<tr class="fail"><td class="icon">&#10008;</td><td>isInsidePolygonGeo</td></tr>
+<tr class="fail"><td class="icon">&#10008;</td><td>doesLineIntersectPolygonGeo</td></tr>
+<tr class="fail"><td class="icon">&#10008;</td><td>GeoToNed</td></tr>
+<tr class="fail"><td class="icon">&#10008;</td><td>NedToGeo</td></tr>
+</tbody>
+        </table>
+    </div>
+
+    <h2>Environment</h2>
+    <div class="section">
+        <table class="info-table">
+            <tr><td>Platform</td><td>Windows 11 (AMD64)</td></tr>
+            <tr><td>Compiler</td><td>Unknown</td></tr>
+            <tr><td>API Version</td><td>Unavailable</td></tr>
+            <tr><td>CMake Build Type</td><td>Debug</td></tr>
+            <tr><td>AddressSanitizer</td><td>Disabled</td></tr>
+            <tr><td>Report Generated</td><td>2026-06-03 14:38:53</td></tr>
+        </table>
+    </div>
+
+    <p class="footer">Generated by GeoPoint CI Test Suite Runner</p>
+</div>
+</body>
+</html>

@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GeoPoint Validation Report</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f7fa; color: #333; padding: 2rem; }
+        .container { max-width: 1100px; margin: 0 auto; }
+        h1 { font-size: 1.8rem; margin-bottom: 0.5rem; }
+        h2 { font-size: 1.3rem; margin: 1.5rem 0 0.75rem; border-bottom: 2px solid #e1e4e8; padding-bottom: 0.4rem; }
+        h3 { font-size: 1.05rem; margin-bottom: 0.5rem; }
+        .header { background: #fff; border-radius: 8px; padding: 1.5rem 2rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 1.5rem; }
+        .header .overall { font-size: 1.4rem; margin-top: 0.5rem; }
+        .meta { font-size: 0.85rem; color: #666; font-weight: normal; }
+        .badge { display: inline-block; padding: 2px 10px; border-radius: 4px; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; }
+        .badge.pass { background: #d4edda; color: #155724; }
+        .badge.fail { background: #f8d7da; color: #721c24; }
+        .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin: 1rem 0; }
+        .summary-card { background: #fff; border-radius: 8px; padding: 1rem 1.2rem; box-shadow: 0 1px 3px rgba(0,0,0,0.08); text-align: center; }
+        .summary-card .value { font-size: 1.8rem; font-weight: 700; }
+        .summary-card .label { font-size: 0.8rem; color: #666; text-transform: uppercase; }
+        .summary-card.pass .value { color: #28a745; }
+        .summary-card.fail .value { color: #dc3545; }
+        .suite { background: #fff; border-radius: 8px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+        .coverage { padding: 0.5rem 0.8rem; border-radius: 4px; margin-bottom: 0.75rem; font-size: 0.9rem; }
+        .coverage.pass { background: #d4edda; }
+        .coverage.fail { background: #f8d7da; }
+        table.results { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+        table.results th { text-align: left; padding: 0.4rem 0.6rem; background: #f8f9fa; border-bottom: 1px solid #e1e4e8; }
+        table.results td { padding: 0.3rem 0.6rem; border-bottom: 1px solid #f0f0f0; }
+        table.results tr.fail td { background: #fff5f5; }
+        td.icon { width: 24px; text-align: center; }
+        tr.pass td.icon { color: #28a745; }
+        tr.fail td.icon { color: #dc3545; }
+        .detail { color: #dc3545; font-size: 0.8rem; }
+        .section { background: #fff; border-radius: 8px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+        details { margin-top: 0.5rem; }
+        summary { cursor: pointer; font-size: 0.9rem; color: #555; }
+        ul.log { list-style: none; font-family: 'Fira Code', monospace; font-size: 0.75rem; margin-top: 0.5rem; max-height: 200px; overflow-y: auto; background: #f8f9fa; padding: 0.5rem; border-radius: 4px; }
+        ul.log li { padding: 2px 0; white-space: pre-wrap; word-break: break-all; }
+        ul.log.error li { color: #dc3545; }
+        .info-table { width: 100%; font-size: 0.85rem; }
+        .info-table td { padding: 0.3rem 0.6rem; }
+        .info-table td:first-child { font-weight: 600; width: 180px; }
+        .footer { text-align: center; font-size: 0.75rem; color: #999; margin-top: 2rem; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>GeoPoint Validation Report</h1>
+        <p class="meta">2026-06-03 15:05:04 | Windows 11 (AMD64) | Unknown</p>
+        <p class="overall"><span class="badge pass">PASS</span> Overall: ALL CHECKS PASSED</p>
+    </div>
+
+    <div class="summary-grid">
+        <div class="summary-card pass">
+            <div class="value">&#10004;</div>
+            <div class="label">Build</div>
+        </div>
+        <div class="summary-card pass">
+            <div class="value">279/279</div>
+            <div class="label">Tests Passed</div>
+        </div>
+        <div class="summary-card pass">
+            <div class="value">8/8</div>
+            <div class="label">API Exports</div>
+        </div>
+        <div class="summary-card pass">
+            <div class="value">0</div>
+            <div class="label">Warnings</div>
+        </div>
+    </div>
+
+    <h2>Build</h2>
+    <div class="section">
+        <table class="info-table">
+            <tr><td>Configuration</td><td>Debug</td></tr>
+            <tr><td>API Version</td><td>0.1.0</td></tr>
+            <tr><td>ASan Enabled</td><td>No</td></tr>
+            <tr><td>Duration</td><td>10.0s</td></tr>
+            <tr><td>Warnings</td><td>0</td></tr>
+            <tr><td>Errors</td><td>0</td></tr>
+        </table>
+        
+        
+    </div>
+
+    <h2>Test Suites</h2>
+    
+        <div class="suite">
+            <h3><span class="badge pass">PASS</span> Geometric Unit Tests (NED + GEO: isInsidePolygon + doesLineIntersect)
+                <span class="meta">(122 tests, 6.1s)</span>
+            </h3>
+            
+            <div class="coverage pass">
+                <strong>Coverage:</strong> [SUCCESS] 100% Logic Coverage Achieved for doesLineIntersectPolygonGeo!
+            </div>
+            <table class="results">
+                <thead><tr><th></th><th>Test</th><th>Details</th></tr></thead>
+                <tbody><tr class="pass"><td class="icon">&#10004;</td><td>Inside Strict</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Outside Strict</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>On Boundary</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Outside Radius Hit</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Outside Safe Radius</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Far Outside Opt</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Null Poly Check</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Small Poly Check</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Point on East Edge</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Concave Bay (Safe)</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Concave Bay (Hit)</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Concave Squeeze</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Sharp Vertex Tip</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Near Sharp Tip</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Exact Vertex (0,0)</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Exact Vertex (10,10)</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Radius == Distance (boundary)</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>CCW Polygon Inside</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>CCW Polygon Outside</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Bowtie Center</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Negative Space Inside</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Negative Space Outside</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Thin Poly Inside</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Thin Poly Radius Miss</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Thin Poly Radius Hit</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>L-Shape Inside Arm</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>L-Shape Inside Base</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>L-Shape Outside Notch</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Origin Centered Inside</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Pentagon Inside</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Pentagon Outside</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>R0 Inside Strict</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>R0 Outside Strict</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>R0 On Boundary</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>R0 Near Boundary (was radius hit)</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>R0 Far Outside (was safe radius)</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>R0 Far Outside Opt</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>R0 Point on East Edge</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>R0 Concave Bay</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>R0 Concave Bay (was radius hit)</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>R0 Sharp Vertex Tip</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>R0 Near Sharp Tip (was radius hit)</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>R0 Exact Vertex (0,0)</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>R0 Exact Vertex (10,10)</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>R0 Radius==Dist point (outside)</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>R0 CCW Inside</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>R0 CCW Outside</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>R0 Bowtie Center</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>R0 Negative Inside</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>R0 Negative Outside</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>R0 Thin Inside</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>R0 Thin Outside (was miss)</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>R0 Thin Outside (was hit)</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>R0 L-Shape Arm</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>R0 L-Shape Base</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>R0 L-Shape Notch</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>R0 Origin Centered</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>R0 Pentagon Inside</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>R0 Pentagon Outside</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Ray Inside Out</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Ray Contained</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Ray Outside Parallel</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>On Boundry Parallel</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Ray Crossing In</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Null Poly Line</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Zero Len Line</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Hit COV 2 (Small Poly Count)</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Ray Above Bay</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Hit Inner Floor</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Thread Needle</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Collinear Overlap</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Grazing Vertex</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Negative Azimuth -90</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Azimuth 450 (wrapped)</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Stops Before Polygon</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Reaches Edge Exactly</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Start On Vertex</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Start On Edge</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Diagonal Miss Corner</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Diagonal Hit</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Very Long Line</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>South Into Polygon</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>South Too Short</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Going Away</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Enter And Exit</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>L-Shape Notch to Base</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>L-Shape Notch Away</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Epsilon Inside</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Due South Hit North Edge</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Negative Len Line</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>GEO Inside Center</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>GEO Outside Far</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>GEO Radius Hit</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>GEO Radius Safe</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>GEO Triangle Inside</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>GEO Triangle Outside</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>GEO On Vertex</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>GEO On Closing Edge</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>GEO Null Poly</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>GEO Small Poly</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>GEO Max Vertices</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>R0 GEO Inside Center</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>R0 GEO Outside Far</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>R0 GEO Near North (was radius hit)</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>R0 GEO Far North (was radius safe)</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>R0 GEO Near South Edge Outside</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>R0 GEO Triangle Inside</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>R0 GEO Triangle Outside</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>R0 GEO On Vertex</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>R0 GEO On Closing Edge</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>R0 GEO On South Edge</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>R0 GEO On East Edge</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>GEO Line From Inside</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>GEO Line Crossing In</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>GEO Line Away</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>GEO Line Too Short</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>GEO Triangle Line Hit</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>GEO Triangle Line Miss</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>GEO Line Null Poly</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>GEO Line Small Poly</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>GEO Line Zero Len</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>GEO Line Max Vertices</td><td></td></tr>
+</tbody>
+            </table>
+        </div>
+        
+        <div class="suite">
+            <h3><span class="badge pass">PASS</span> Coordinate Conversion & Robustness Tests
+                <span class="meta">(115 tests, 5.6s)</span>
+            </h3>
+            
+            <table class="results">
+                <thead><tr><th></th><th>Test</th><th>Details</th></tr></thead>
+                <tbody><tr class="pass"><td class="icon">&#10004;</td><td>Version string is 0.1.0</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Version major is 0</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Version minor is 1</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Version patch is 0</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>GetApiVersionNumbers with null outputs (no crash)</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Equator/PM: X = semi-major axis</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Equator/PM: Y = 0</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Equator/PM: Z = 0</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Equator/90E: X = 0</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Equator/90E: Y = semi-major axis</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Equator/90E: Z = 0</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>North Pole: X = 0</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>North Pole: Y = 0</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>North Pole: Z = semi-minor axis</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>South Pole: X = 0</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>South Pole: Y = 0</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>South Pole: Z = -semi-minor axis</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Date Line: X = -semi-major axis</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Date Line: Y ~ 0</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Date Line: Z = 0</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>100km alt: X = a + 100km</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Equator/PM: lat = 0</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Equator/PM: lon = 0</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Equator/PM: alt = 0</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>North Pole: lat = 90</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>North Pole: alt ~ 0</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>South Pole: lat = -90</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>South Pole: alt ~ 0</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>90E Equator: lat = 0</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>90E Equator: lon = 90</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Round-trip: Tel Aviv</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Round-trip: London</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Round-trip: Cape Town</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Round-trip: Tokyo</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Round-trip: Rio de Janeiro</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Round-trip: Null Island</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Round-trip: Near North Pole</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Round-trip: Near South Pole</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Round-trip: Near Date Line</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Round-trip: High Alt (35km)</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>NED Round-trip: 1km NE offset</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>NED Round-trip: 11km North</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>NED Round-trip: 9km East</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>NED Round-trip: 11km SW + alt</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>NED Round-trip: Same position, high alt</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>NED Round-trip: Origin itself</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>ECEF->NED->ECEF: X match</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>ECEF->NED->ECEF: Y match</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>ECEF->NED->ECEF: Z match</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Validate lat: 0</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Validate lat: PI/4</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Validate lat: -PI/4</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Validate lat: PI/2 (exact)</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Validate lat: -PI/2 (exact)</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Validate lat: over north pole</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Validate lat: under south pole</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Validate lon: 0</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Validate lon: PI (exact)</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Validate lon: -PI (exact)</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Validate lon: over PI</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Validate lon: under -PI</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Identity * [1,2,3]: x=1</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Identity * [1,2,3]: y=2</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Identity * [1,2,3]: z=3</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Rot90Z * [1,0,0]: x=0</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Rot90Z * [1,0,0]: y=1</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Rot90Z * [1,0,0]: z=0</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Scale * [1,1,1]: x=2</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Scale * [1,1,1]: y=3</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Scale * [1,1,1]: z=4</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>0.0 == 0.0</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>1.0 == 1.0</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>1.0 ~ 1.0+1e-8</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>1.0 != 1.0+1e-5</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>-5.0 == -5.0</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>0.0 != 1e-5</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Distance squared (3,4) = 25</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Distance squared (1,1) = 2</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Distance squared same point = 0</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Point on segment = 0</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Point 3m perpendicular = 9</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Point beyond endpoint = 25</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Zero-length segment: dist to point</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>CCW orientation</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>CW orientation</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Collinear orientation</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>X-crossing segments</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Parallel segments</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>T-junction</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Far apart segments</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Shared endpoint</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>isInsidePolygonNED with null outResult/resultState (no crash)</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>doesLineIntersectPolygonNED with null out-params (no crash)</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Degenerate polygon (same point): state OK</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Point on degenerate vertex: collision</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Collinear polygon: state OK (no crash)</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Collinear polygon handled without crash</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Large coords: state OK</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Large coords: point inside</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Tiny polygon: state OK</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Tiny polygon: point inside</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>North pole round-trip: lat=90</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>South pole round-trip: lat=-90</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Near-pole: lat preserved</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Near-pole: lon preserved</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>NED at pole origin: north not NaN</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>NED at pole origin: east not NaN</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>NED at pole origin: down not NaN</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>NED at pole origin: north finite</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>NED at pole origin: east finite</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>NED at pole origin: down finite</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Azimuth 0: state OK</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Azimuth 360: state OK</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Azimuth 90 hitting polygon: collision</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>Tiny line outside: no collision</td><td></td></tr>
+</tbody>
+            </table>
+        </div>
+        
+        <div class="suite">
+            <h3><span class="badge pass">PASS</span> Geometric Regression (radius=0 + line intersection)
+                <span class="meta">(42 tests, 0.3s)</span>
+            </h3>
+            
+            <table class="results">
+                <thead><tr><th></th><th>Test</th><th>Details</th></tr></thead>
+                <tbody><tr class="pass"><td class="icon">&#10004;</td><td>NED R0: Inside center</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>NED R0: Outside strict</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>NED R0: On boundary (south edge)</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>NED R0: Near boundary outside</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>NED R0: Far outside</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>NED R0: Far outside diagonal</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>NED R0: On east edge</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>NED R0: Exact vertex (0,0)</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>NED R0: Exact vertex (10,10)</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>NED R0: Outside near west edge</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>NED R0: Concave bay (outside)</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>NED R0: Sharp vertex tip</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>NED R0: Off vertex (outside)</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>NED R0: L-shape arm inside</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>NED R0: L-shape base inside</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>NED R0: L-shape notch outside</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>NED R0: Pentagon inside</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>NED R0: Pentagon outside</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>GEO R0: Inside center</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>GEO R0: Outside far</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>GEO R0: Near north (outside)</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>GEO R0: Far north (outside)</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>GEO R0: Near south edge outside</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>GEO R0: Triangle inside</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>GEO R0: Triangle outside</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>GEO R0: On vertex</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>GEO R0: On closing edge</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>GEO R0: On south edge</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>GEO R0: On east edge</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>NED Line: Inside out</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>NED Line: Contained</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>NED Line: Outside parallel</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>NED Line: Crossing in</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>NED Line: Too short</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>NED Line: Reaches edge</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>NED Line: Going away</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>GEO Line: From inside</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>GEO Line: Crossing in</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>GEO Line: Away</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>GEO Line: Too short</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>GEO Line: Triangle hit</td><td></td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>GEO Line: Triangle miss</td><td></td></tr>
+</tbody>
+            </table>
+        </div>
+        
+
+    <h2>DLL/Shared Library Exports</h2>
+    <div class="section">
+        <p><span class="badge pass">PASS</span> All expected API functions exported</p>
+        <table class="results" style="margin-top: 0.75rem;">
+            <thead><tr><th></th><th>Function</th></tr></thead>
+            <tbody><tr class="pass"><td class="icon">&#10004;</td><td>GetApiVersionString</td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>GetApiVersionNumbers</td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>isInsidePolygonNED</td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>doesLineIntersectPolygonNED</td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>isInsidePolygonGeo</td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>doesLineIntersectPolygonGeo</td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>GeoToNed</td></tr>
+<tr class="pass"><td class="icon">&#10004;</td><td>NedToGeo</td></tr>
+</tbody>
+        </table>
+    </div>
+
+    <h2>Environment</h2>
+    <div class="section">
+        <table class="info-table">
+            <tr><td>Platform</td><td>Windows 11 (AMD64)</td></tr>
+            <tr><td>Compiler</td><td>Unknown</td></tr>
+            <tr><td>API Version</td><td>0.1.0</td></tr>
+            <tr><td>CMake Build Type</td><td>Debug</td></tr>
+            <tr><td>AddressSanitizer</td><td>Disabled</td></tr>
+            <tr><td>Report Generated</td><td>2026-06-03 15:05:04</td></tr>
+        </table>
+    </div>
+
+    <p class="footer">Generated by GeoPoint CI Test Suite Runner</p>
+</div>
+</body>
+</html>

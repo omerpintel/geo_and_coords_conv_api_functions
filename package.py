@@ -22,6 +22,10 @@ HEADERS = [
     PROJECT_ROOT / "include" / "api_structs.h",
 ]
 
+GENERATED_HEADERS = [
+    "api_version.h",
+]
+
 PRESET_BUILD_DIRS = {
     "windows-debug": "out/build/windows-debug",
     "windows-release": "out/build/windows-release",
@@ -132,6 +136,17 @@ def main():
             print(f"  [OK] include/{header.name}")
         else:
             print(f"  [ERROR] Header not found: {header}")
+            sys.exit(1)
+
+    generated_include_dir = build_dir / "generated" / "include"
+    for header_name in GENERATED_HEADERS:
+        header = generated_include_dir / header_name
+        if header.exists():
+            shutil.copy2(header, output_dir / "include" / header.name)
+            print(f"  [OK] include/{header.name}")
+        else:
+            print(f"  [ERROR] Generated header not found: {header}")
+            print("          Reconfigure the project so CMake can generate version headers.")
             sys.exit(1)
 
     print()

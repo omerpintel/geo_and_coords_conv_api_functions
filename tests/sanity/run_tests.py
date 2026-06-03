@@ -72,6 +72,7 @@ class ValidationReport:
     test_suites: List[TestSuite] = field(default_factory=list)
     dll_exports: List[str] = field(default_factory=list)
     dll_exports_valid: bool = False
+    api_version: str = "Unavailable"
     asan_enabled: bool = False
     overall_pass: bool = False
 
@@ -244,8 +245,12 @@ def run_test_binary(binary_path: str, suite_name: str, reports_dir: str = None) 
 # ============================================================================
 
 EXPECTED_EXPORTS = [
-    "isInsidePolygon",
-    "doesLineIntersectPolygon",
+    "GetApiVersionString",
+    "GetApiVersionNumbers",
+    "isInsidePolygonNED",
+    "doesLineIntersectPolygonNED",
+    "isInsidePolygonGeo",
+    "doesLineIntersectPolygonGeo",
     "GeoToNed",
     "NedToGeo",
 ]
@@ -291,6 +296,24 @@ def validate_dll_exports(lib_path: str) -> tuple:
 
     valid = all(f in exports for f in EXPECTED_EXPORTS)
     return exports, valid
+
+
+def read_api_version(lib_path: str) -> str:
+    """Read the API version string through the shared library."""
+    if not lib_path or not os.path.exists(lib_path):
+        return "Unavailable"
+
+    try:
+        import ctypes
+        if platform.system() == "Windows":
+            os.add_dll_directory(os.path.dirname(lib_path))
+        lib = ctypes.CDLL(lib_path)
+        lib.GetApiVersionString.argtypes = []
+        lib.GetApiVersionString.restype = ctypes.c_char_p
+        raw_version = lib.GetApiVersionString()
+        return raw_version.decode("ascii") if raw_version else "Unavailable"
+    except Exception as exc:
+        return f"Unavailable ({exc})"
 
 
 # ============================================================================
@@ -444,6 +467,7 @@ def generate_html_report(report: ValidationReport, output_path: str):
     <div class="section">
         <table class="info-table">
             <tr><td>Configuration</td><td>{report.build_config}</td></tr>
+            <tr><td>API Version</td><td>{report.api_version}</td></tr>
             <tr><td>ASan Enabled</td><td>{"Yes" if report.asan_enabled else "No"}</td></tr>
             <tr><td>Duration</td><td>{report.build_result.duration_sec:.1f}s</td></tr>
             <tr><td>Warnings</td><td>{len(report.build_result.warnings) if report.build_result else 0}</td></tr>
@@ -470,6 +494,7 @@ def generate_html_report(report: ValidationReport, output_path: str):
         <table class="info-table">
             <tr><td>Platform</td><td>{report.platform_info}</td></tr>
             <tr><td>Compiler</td><td>{report.compiler_info}</td></tr>
+            <tr><td>API Version</td><td>{report.api_version}</td></tr>
             <tr><td>CMake Build Type</td><td>{report.build_config}</td></tr>
             <tr><td>AddressSanitizer</td><td>{"Enabled" if report.asan_enabled else "Disabled"}</td></tr>
             <tr><td>Report Generated</td><td>{report.timestamp}</td></tr>
@@ -485,6 +510,60 @@ def generate_html_report(report: ValidationReport, output_path: str):
         f.write(html)
 
     print(f"\n  Report saved to: {output_path}")
+
+
+# ============================================================================
+# Python Regression Phase
+# ============================================================================
+
+def run_python_regression(project_root: str, suite_name: str) -> TestSuite:
+    """Run the Python geometric regression test and parse its output."""
+    suite = TestSuite(name=suite_name, binary="geometric_regression.py")
+
+    regression_script = os.path.join(project_root, "tests", "regression", "geometric_regression.py")
+    if not os.path.exists(regression_script):
+        suite.results.append(TestResult(name="Script Not Found", passed=False, detail=f"Missing: {regression_script}"))
+        suite.total_failed = 1
+        return suite
+
+    print(f"\n  Running: {suite_name}")
+    start = time.time()
+    rc, stdout, stderr = run_command([sys.executable, regression_script, "--verbose"], cwd=project_root)
+    suite.duration_sec = time.time() - start
+    suite.raw_output = stdout + "\n" + stderr
+
+    # Parse output
+    for line in stdout.splitlines():
+        line = line.strip()
+        if line.startswith("[PASS]"):
+            test_name = line[7:].strip()
+            suite.results.append(TestResult(name=test_name, passed=True))
+            suite.total_passed += 1
+        elif line.startswith("[FAIL]"):
+            test_name = line[7:].strip()
+            suite.results.append(TestResult(name=test_name, passed=False, detail=line))
+            suite.total_failed += 1
+
+    # If no PASS/FAIL lines were parsed, check for summary in output
+    if suite.total_passed == 0 and suite.total_failed == 0:
+        # Try parsing "RESULT: X passed, Y failed"
+        for line in stdout.splitlines():
+            if "passed" in line and "failed" in line:
+                import re as _re
+                m = _re.search(r'(\d+)\s+passed.*?(\d+)\s+failed', line)
+                if m:
+                    suite.total_passed = int(m.group(1))
+                    suite.total_failed = int(m.group(2))
+                    if suite.total_failed > 0:
+                        suite.results.append(TestResult(name="Regression failures", passed=False, detail=line.strip()))
+                    else:
+                        suite.results.append(TestResult(name="All regression tests", passed=True))
+                    break
+
+    status = "PASS" if suite.total_failed == 0 and rc == 0 else "FAIL"
+    print(f"  Result:  [{status}] {suite.total_passed} passed, {suite.total_failed} failed ({suite.duration_sec:.1f}s)")
+
+    return suite
 
 
 # ============================================================================
@@ -600,12 +679,14 @@ def run_all_configs(args):
 
         geo_suite = run_test_binary(geo_tests_bin, f"Geometric Unit Tests ({config})", reports_dir=reports_dir)
         coords_suite = run_test_binary(coords_tests_bin, f"Coordinate Conversion Tests ({config})", reports_dir=reports_dir)
-        report.test_suites = [geo_suite, coords_suite]
+        regression_suite = run_python_regression(project_root, f"Geometric Regression ({config})")
+        report.test_suites = [geo_suite, coords_suite, regression_suite]
 
         # DLL export validation
         lib_path = find_library(build_dir)
         if lib_path:
             report.dll_exports, report.dll_exports_valid = validate_dll_exports(lib_path)
+            report.api_version = read_api_version(lib_path)
         else:
             report.dll_exports_valid = False
 
@@ -691,10 +772,13 @@ def run_single_config(args):
     coords_tests_bin = find_binary(build_dir, "coords_conv_tests")
 
     # Run each suite
-    geo_suite = run_test_binary(geo_tests_bin, "Geometric Unit Tests (isInsidePolygon + doesLineIntersectPolygon)", reports_dir=reports_dir)
+    geo_suite = run_test_binary(geo_tests_bin, "Geometric Unit Tests (NED + GEO: isInsidePolygon + doesLineIntersect)", reports_dir=reports_dir)
     coords_suite = run_test_binary(coords_tests_bin, "Coordinate Conversion & Robustness Tests", reports_dir=reports_dir)
 
-    report.test_suites = [geo_suite, coords_suite]
+    # Run Python regression tests (loads DLL via ctypes)
+    regression_suite = run_python_regression(project_root, "Geometric Regression (radius=0 + line intersection)")
+
+    report.test_suites = [geo_suite, coords_suite, regression_suite]
 
     # --- Phase 3: DLL Export Validation ---
     print(f"\n{'='*60}")
@@ -705,8 +789,10 @@ def run_single_config(args):
     if lib_path:
         print(f"  Library: {lib_path}")
         report.dll_exports, report.dll_exports_valid = validate_dll_exports(lib_path)
+        report.api_version = read_api_version(lib_path)
         status = "PASS" if report.dll_exports_valid else "FAIL"
         print(f"  Result:  [{status}] {len(report.dll_exports)}/{len(EXPECTED_EXPORTS)} functions exported")
+        print(f"  Version: {report.api_version}")
     else:
         print("  Library not found - skipping export validation")
         report.dll_exports_valid = False

@@ -4,7 +4,7 @@ import sys
 import math
 from enum import IntEnum
 
-# --- 1. Shared C Structure ---
+# --- 1. Shared C Structures ---
 class SPointNE(ctypes.Structure):
     _pack_ = 1
     _fields_ = [("north", ctypes.c_float), ("east", ctypes.c_float)]
@@ -12,11 +12,25 @@ class SPointNE(ctypes.Structure):
     def __repr__(self):
         return f"SPointNE(N={self.north:.2f}, E={self.east:.2f})"
 
+class SPointGeo(ctypes.Structure):
+    _pack_ = 1
+    _fields_ = [
+        ("latitudeDeg", ctypes.c_double),
+        ("longitudeDeg", ctypes.c_double),
+        ("altitude", ctypes.c_double)
+    ]
+
+    def __repr__(self):
+        return f"SPointGeo(lat={self.latitudeDeg:.6f}, lon={self.longitudeDeg:.6f}, alt={self.altitude:.1f})"
+
+# --- 2. Enums: NED Functions ---
+
 class EIsInsideResult(IntEnum):
     IS_INSIDE_OK = 0
     IS_INSIDE_POLYGON_IS_NULL_PTR = 1
     IS_INSIDE_POLYGON_WITH_LESS_THAN_3_POINTS = 2
     IS_INSIDE_OUTPUT_PTR_IS_NULL = 3
+    IS_INSIDE_POLYGON_EXCEEDS_MAX_VERTICES = 4
 
 class ELineIntersectResult(IntEnum):
     LINE_INTERSECT_OK = 0
@@ -24,11 +38,29 @@ class ELineIntersectResult(IntEnum):
     LINE_INTERSECT_POLYGON_WITH_LESS_THAN_3_POINTS = 2
     LINE_INTERSECT_MAX_LENGTH_LESS_OR_EQUAL_TO_ZERO = 3
     LINE_INTERSECT_OUTPUT_PTR_IS_NULL = 4
+    LINE_INTERSECT_POLYGON_EXCEEDS_MAX_VERTICES = 5
+
+# --- 3. Enums: GEO Functions ---
+
+class EIsInsideGeoResult(IntEnum):
+    IS_INSIDE_GEO_OK = 0
+    IS_INSIDE_GEO_POLYGON_IS_NULL_PTR = 1
+    IS_INSIDE_GEO_POLYGON_WITH_LESS_THAN_3_POINTS = 2
+    IS_INSIDE_GEO_OUTPUT_PTR_IS_NULL = 3
+    IS_INSIDE_GEO_POLYGON_EXCEEDS_MAX_VERTICES = 4
+
+class ELineIntersectGeoResult(IntEnum):
+    LINE_INTERSECT_GEO_OK = 0
+    LINE_INTERSECT_GEO_POLYGON_IS_NULL_PTR = 1
+    LINE_INTERSECT_GEO_POLYGON_WITH_LESS_THAN_3_POINTS = 2
+    LINE_INTERSECT_GEO_MAX_LENGTH_LESS_OR_EQUAL_TO_ZERO = 3
+    LINE_INTERSECT_GEO_OUTPUT_PTR_IS_NULL = 4
+    LINE_INTERSECT_GEO_POLYGON_EXCEEDS_MAX_VERTICES = 5
 
 # Legacy alias for visualization scripts
 EResultState = EIsInsideResult
 
-# --- 2. Shared Library Loader ---
+# --- 4. Shared Library Loader ---
 def load_geopoint_library():
     """Finds and loads the api_functions DLL."""
     lib_name = "api_functions.dll" if sys.platform.startswith("win32") else "libapi_functions.so"
@@ -41,8 +73,14 @@ def load_geopoint_library():
         os.path.join(project_root, "out", "build", "WSL-GCC-Debug", "bin"),
         os.path.join(project_root, "out", "build", "x64-Debug", "bin"),
         os.path.join(project_root, "out", "build", "x64-Release", "bin"),
+        os.path.join(project_root, "out", "build", "windows-debug", "bin"),
+        os.path.join(project_root, "out", "build", "windows-release", "bin"),
+        os.path.join(project_root, "out", "build", "ci", "bin"),
+        os.path.join(project_root, "out", "build", "ci", "bin", "Debug"),
+        os.path.join(project_root, "out", "build", "ci", "bin", "Release"),
+        os.path.join(project_root, "out", "build", "test", "bin"),
         os.path.join(project_root, "build", "bin"),
-        os.path.join(project_root, "bin") # Common output dir
+        os.path.join(project_root, "bin")
     ]
 
     for path in search_paths:
@@ -57,7 +95,7 @@ def load_geopoint_library():
     print(f"Searched in: {search_paths}", file=sys.stderr)
     sys.exit(1)
 
-# --- 3. Shared Math Helper ---
+# --- 5. Shared Math Helper ---
 def ned_to_geodetic(north, east, origin_lat, origin_lon):
     EARTH_RADIUS = 6371000.0
     lat = origin_lat + math.degrees(north / EARTH_RADIUS)

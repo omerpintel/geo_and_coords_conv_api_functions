@@ -1,0 +1,1207 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+    
+            <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                #map_62d3245f3e9bcadfcb28e4b5b572a008 {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+                .leaflet-container { font-size: 1rem; }
+            </style>
+
+            <style>html, body {
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            </style>
+
+            <style>#map {
+                position:absolute;
+                top:0;
+                bottom:0;
+                right:0;
+                left:0;
+                }
+            </style>
+
+            <script>
+                L_NO_TOUCH = false;
+                L_DISABLE_3D = false;
+            </script>
+
+        
+</head>
+<body>
+    
+    
+            <div class="folium-map" id="map_62d3245f3e9bcadfcb28e4b5b572a008" ></div>
+        
+</body>
+<script>
+    
+    
+            var map_62d3245f3e9bcadfcb28e4b5b572a008 = L.map(
+                "map_62d3245f3e9bcadfcb28e4b5b572a008",
+                {
+                    center: [32.0853, 34.7818],
+                    crs: L.CRS.EPSG3857,
+                    ...{
+  "zoom": 15,
+  "zoomControl": true,
+  "preferCanvas": false,
+}
+
+                }
+            );
+
+            
+
+        
+    
+            var tile_layer_99fb1b66ddb6cac9fdf3ec9d144e8719 = L.tileLayer(
+                "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+                {
+  "minZoom": 0,
+  "maxZoom": 19,
+  "maxNativeZoom": 19,
+  "noWrap": false,
+  "attribution": "\u0026copy; \u003ca href=\"https://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors",
+  "subdomains": "abc",
+  "detectRetina": false,
+  "tms": false,
+  "opacity": 1,
+}
+
+            );
+        
+    
+            tile_layer_99fb1b66ddb6cac9fdf3ec9d144e8719.addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            var polygon_2796c7b9979d289a074e92011c5d2f6e = L.polygon(
+                [[32.09033159083862, 34.78291658229782], [32.08864529182599, 34.78535112368943], [32.088314854435, 34.78681830898724], [32.08347104006247, 34.78788229120867], [32.082876461002236, 34.787301931614174], [32.08338618887265, 34.785155571538134], [32.081266937501034, 34.7837346390126], [32.0824776447759, 34.78308880511154], [32.08278394253913, 34.77904407840571], [32.083425181061436, 34.77938449140799], [32.083377191804075, 34.77712695239787], [32.08514109848518, 34.77778324960347], [32.08630659514644, 34.778359132209005], [32.087766972041216, 34.77641874015834], [32.08866607059696, 34.77892844989345], [32.089143776386656, 34.78075716384786]],
+                {"bubblingMouseEvents": true, "color": "#8E44AD", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#8E44AD", "fillOpacity": 0.4, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            var poly_line_4c94f0fe334d6db72c4687ea1cfd7d0b = L.polyline(
+                [[32.07780596106612, 34.77976173109233], [32.08238422086704, 34.7817087863085]],
+                {"bubblingMouseEvents": true, "color": "#10B981", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#10B981", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            poly_line_4c94f0fe334d6db72c4687ea1cfd7d0b.bindTooltip(
+                `<div>
+                     Hit: False<br>Az: 19.8<br>Len: 541.1
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_52d5afccf66439f54b4ec227a895a188 = L.circleMarker(
+                [32.07780596106612, 34.77976173109233],
+                {"bubblingMouseEvents": true, "color": "black", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "black", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 3, "stroke": true, "weight": 3}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            var poly_line_683f0ca9fe58a4deb8fbd62ec63aa124 = L.polyline(
+                [[32.08480450432732, 34.776430667407986], [32.08102520368755, 34.78037901301038]],
+                {"bubblingMouseEvents": true, "color": "#EF4444", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#EF4444", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            poly_line_683f0ca9fe58a4deb8fbd62ec63aa124.bindTooltip(
+                `<div>
+                     Hit: True<br>Az: 138.5<br>Len: 561.2
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_f5effa87a68d1776c6de23ab5e94e67b = L.circleMarker(
+                [32.08480450432732, 34.776430667407986],
+                {"bubblingMouseEvents": true, "color": "black", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "black", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 3, "stroke": true, "weight": 3}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            var poly_line_ccc7b8645d3dc973ac94ebfff23713ee = L.polyline(
+                [[32.07872379686619, 34.77969588756992], [32.07549680304333, 34.78479951156438]],
+                {"bubblingMouseEvents": true, "color": "#10B981", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#10B981", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            poly_line_ccc7b8645d3dc973ac94ebfff23713ee.bindTooltip(
+                `<div>
+                     Hit: False<br>Az: 126.7<br>Len: 600.0
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_a57898621e0cfa2ee9e2bf3ba10a3877 = L.circleMarker(
+                [32.07872379686619, 34.77969588756992],
+                {"bubblingMouseEvents": true, "color": "black", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "black", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 3, "stroke": true, "weight": 3}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            var poly_line_fd989fbdf0e5d4b55919f007bbf5faca = L.polyline(
+                [[32.08664700681883, 34.778401670216134], [32.08504571636911, 34.78247094972974]],
+                {"bubblingMouseEvents": true, "color": "#EF4444", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#EF4444", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            poly_line_fd989fbdf0e5d4b55919f007bbf5faca.bindTooltip(
+                `<div>
+                     Hit: True<br>Az: 114.9<br>Len: 422.7
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_5bf0d7c6bd25a6992bb7a4b5c52b2880 = L.circleMarker(
+                [32.08664700681883, 34.778401670216134],
+                {"bubblingMouseEvents": true, "color": "black", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "black", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 3, "stroke": true, "weight": 3}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            var poly_line_73632d39762b8301e30613c835b12796 = L.polyline(
+                [[32.087002557472225, 34.779293175218825], [32.087773885712835, 34.778604945219485]],
+                {"bubblingMouseEvents": true, "color": "#EF4444", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#EF4444", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            poly_line_73632d39762b8301e30613c835b12796.bindTooltip(
+                `<div>
+                     Hit: True<br>Az: 322.9<br>Len: 107.5
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_bb883b038a8db673c6be1a4679b1b5ab = L.circleMarker(
+                [32.087002557472225, 34.779293175218825],
+                {"bubblingMouseEvents": true, "color": "black", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "black", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 3, "stroke": true, "weight": 3}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            var poly_line_d44b1bccf5b6227b4dcbcdc254b86275 = L.polyline(
+                [[32.086273107467875, 34.78838622876325], [32.08402114028654, 34.79261322348716]],
+                {"bubblingMouseEvents": true, "color": "#10B981", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#10B981", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            poly_line_d44b1bccf5b6227b4dcbcdc254b86275.bindTooltip(
+                `<div>
+                     Hit: False<br>Az: 122.2<br>Len: 470.4
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_67b4f50436745c769b83deccc45641a7 = L.circleMarker(
+                [32.086273107467875, 34.78838622876325],
+                {"bubblingMouseEvents": true, "color": "black", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "black", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 3, "stroke": true, "weight": 3}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            var poly_line_ba6a4613527cdd2d6537ea7f559478ac = L.polyline(
+                [[32.08052660575463, 34.77901186859343], [32.074547550531456, 34.774826099532866]],
+                {"bubblingMouseEvents": true, "color": "#10B981", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#10B981", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            poly_line_ba6a4613527cdd2d6537ea7f559478ac.bindTooltip(
+                `<div>
+                     Hit: False<br>Az: 210.7<br>Len: 773.0
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_d4495473b77d442f777213d8cd614e5f = L.circleMarker(
+                [32.08052660575463, 34.77901186859343],
+                {"bubblingMouseEvents": true, "color": "black", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "black", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 3, "stroke": true, "weight": 3}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            var poly_line_5d93e0a90c03849d876b66a3a89235bc = L.polyline(
+                [[32.09133138020311, 34.77414555561227], [32.09084935380769, 34.77303644377994]],
+                {"bubblingMouseEvents": true, "color": "#10B981", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#10B981", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            poly_line_5d93e0a90c03849d876b66a3a89235bc.bindTooltip(
+                `<div>
+                     Hit: False<br>Az: 242.8<br>Len: 117.4
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_4f38e111cd45aa2559018a8b7090aec6 = L.circleMarker(
+                [32.09133138020311, 34.77414555561227],
+                {"bubblingMouseEvents": true, "color": "black", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "black", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 3, "stroke": true, "weight": 3}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            var poly_line_0c7f4a399a79426dc304eb4c512098a8 = L.polyline(
+                [[32.080860948117014, 34.77674983604506], [32.07801174316533, 34.77614673938216]],
+                {"bubblingMouseEvents": true, "color": "#10B981", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#10B981", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            poly_line_0c7f4a399a79426dc304eb4c512098a8.bindTooltip(
+                `<div>
+                     Hit: False<br>Az: 190.2<br>Len: 321.9
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_fd74e62b1b2788c163b6430a7dd6dfed = L.circleMarker(
+                [32.080860948117014, 34.77674983604506],
+                {"bubblingMouseEvents": true, "color": "black", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "black", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 3, "stroke": true, "weight": 3}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            var poly_line_fb743d8d16db252a44c797a6d1b7c334 = L.polyline(
+                [[32.079050658228425, 34.77512697342913], [32.07853433658765, 34.78023589144434]],
+                {"bubblingMouseEvents": true, "color": "#10B981", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#10B981", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            poly_line_fb743d8d16db252a44c797a6d1b7c334.bindTooltip(
+                `<div>
+                     Hit: False<br>Az: 96.8<br>Len: 484.8
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_6a4c0bfffd88bc44c1bf00fc6cdd4ca7 = L.circleMarker(
+                [32.079050658228425, 34.77512697342913],
+                {"bubblingMouseEvents": true, "color": "black", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "black", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 3, "stroke": true, "weight": 3}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            var poly_line_f7617f8247a4f946977167d912e73a4c = L.polyline(
+                [[32.092888330669105, 34.77615918414717], [32.094185754455836, 34.779485710880124]],
+                {"bubblingMouseEvents": true, "color": "#10B981", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#10B981", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            poly_line_f7617f8247a4f946977167d912e73a4c.bindTooltip(
+                `<div>
+                     Hit: False<br>Az: 65.3<br>Len: 345.0
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_d2eb7b7b0a81a99167271f248cf6ad75 = L.circleMarker(
+                [32.092888330669105, 34.77615918414717],
+                {"bubblingMouseEvents": true, "color": "black", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "black", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 3, "stroke": true, "weight": 3}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            var poly_line_b26fd302f455cac1668aa745d1e8d6ee = L.polyline(
+                [[32.08715852023136, 34.78107335330595], [32.08593911495127, 34.78274159814536]],
+                {"bubblingMouseEvents": true, "color": "#EF4444", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#EF4444", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            poly_line_b26fd302f455cac1668aa745d1e8d6ee.bindTooltip(
+                `<div>
+                     Hit: True<br>Az: 130.8<br>Len: 207.6
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_b0c63cf29ad3d4e9b542f5080d03c7cc = L.circleMarker(
+                [32.08715852023136, 34.78107335330595],
+                {"bubblingMouseEvents": true, "color": "black", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "black", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 3, "stroke": true, "weight": 3}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            var poly_line_866caf5454c66251204877f10b3e59db = L.polyline(
+                [[32.08757777714388, 34.779433374097415], [32.09324852687726, 34.78388936805908]],
+                {"bubblingMouseEvents": true, "color": "#EF4444", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#EF4444", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            poly_line_866caf5454c66251204877f10b3e59db.bindTooltip(
+                `<div>
+                     Hit: True<br>Az: 33.7<br>Len: 757.5
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_9919d2ff537ba7bfcd819a07ff097beb = L.circleMarker(
+                [32.08757777714388, 34.779433374097415],
+                {"bubblingMouseEvents": true, "color": "black", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "black", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 3, "stroke": true, "weight": 3}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            var poly_line_9a555d8afe19b1f53ee24fdfaf928f50 = L.polyline(
+                [[32.0897010887553, 34.77485894553781], [32.08793361961224, 34.77760432964312]],
+                {"bubblingMouseEvents": true, "color": "#EF4444", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#EF4444", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            poly_line_9a555d8afe19b1f53ee24fdfaf928f50.bindTooltip(
+                `<div>
+                     Hit: True<br>Az: 127.2<br>Len: 324.8
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_695b04021cec7e7346898c3e4b932093 = L.circleMarker(
+                [32.0897010887553, 34.77485894553781],
+                {"bubblingMouseEvents": true, "color": "black", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "black", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 3, "stroke": true, "weight": 3}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            var poly_line_71bfdb0b3e5f4b88d091001d78cd9186 = L.polyline(
+                [[32.08182776929857, 34.78304266739138], [32.082132475154076, 34.779704653518124]],
+                {"bubblingMouseEvents": true, "color": "#10B981", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#10B981", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            poly_line_71bfdb0b3e5f4b88d091001d78cd9186.bindTooltip(
+                `<div>
+                     Hit: False<br>Az: 276.1<br>Len: 316.3
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_32454fbc3655b5b608ffa4bb02f186fe = L.circleMarker(
+                [32.08182776929857, 34.78304266739138],
+                {"bubblingMouseEvents": true, "color": "black", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "black", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 3, "stroke": true, "weight": 3}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            var poly_line_1e2daae36ca5149a60d0d4a3ea620720 = L.polyline(
+                [[32.08667977903426, 34.7718535209402], [32.082788017640354, 34.772772778919965]],
+                {"bubblingMouseEvents": true, "color": "#10B981", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#10B981", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            poly_line_1e2daae36ca5149a60d0d4a3ea620720.bindTooltip(
+                `<div>
+                     Hit: False<br>Az: 168.7<br>Len: 441.3
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_94fc0ac2b64d7c3d1c15af5c95ec19c2 = L.circleMarker(
+                [32.08667977903426, 34.7718535209402],
+                {"bubblingMouseEvents": true, "color": "black", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "black", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 3, "stroke": true, "weight": 3}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            var poly_line_bbf54d434ce2a25edcddfe6a5ae3678b = L.polyline(
+                [[32.08717251699017, 34.7763329850253], [32.08281952867002, 34.76999292867844]],
+                {"bubblingMouseEvents": true, "color": "#10B981", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#10B981", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            poly_line_bbf54d434ce2a25edcddfe6a5ae3678b.bindTooltip(
+                `<div>
+                     Hit: False<br>Az: 231.0<br>Len: 768.8
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_d13e6aa3ff5124286bb658d50c3714d5 = L.circleMarker(
+                [32.08717251699017, 34.7763329850253],
+                {"bubblingMouseEvents": true, "color": "black", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "black", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 3, "stroke": true, "weight": 3}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            var poly_line_6b9270c0b21aa719507b3112a6f9f31b = L.polyline(
+                [[32.08702867155553, 34.77910605059599], [32.08773353057941, 34.77978768693125]],
+                {"bubblingMouseEvents": true, "color": "#EF4444", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#EF4444", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            poly_line_6b9270c0b21aa719507b3112a6f9f31b.bindTooltip(
+                `<div>
+                     Hit: True<br>Az: 39.3<br>Len: 101.3
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_1662df3386a8f0b80c32ab6987cc74f1 = L.circleMarker(
+                [32.08702867155553, 34.77910605059599],
+                {"bubblingMouseEvents": true, "color": "black", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "black", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 3, "stroke": true, "weight": 3}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            var poly_line_301d4b08772719aa11c6a09b4addf737 = L.polyline(
+                [[32.090539449389496, 34.77382157875033], [32.087049148659325, 34.76958803919574]],
+                {"bubblingMouseEvents": true, "color": "#10B981", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#10B981", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            poly_line_301d4b08772719aa11c6a09b4addf737.bindTooltip(
+                `<div>
+                     Hit: False<br>Az: 225.8<br>Len: 556.5
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_29a0ff9fa22de1d8ee8ff29e0851428d = L.circleMarker(
+                [32.090539449389496, 34.77382157875033],
+                {"bubblingMouseEvents": true, "color": "black", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "black", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 3, "stroke": true, "weight": 3}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            var poly_line_7b61138608fc7ddb9f5bf67bdf146ec4 = L.polyline(
+                [[32.08357107235882, 34.78958220741563], [32.08445785082188, 34.78917926929057]],
+                {"bubblingMouseEvents": true, "color": "#10B981", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#10B981", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            poly_line_7b61138608fc7ddb9f5bf67bdf146ec4.bindTooltip(
+                `<div>
+                     Hit: False<br>Az: 338.9<br>Len: 105.7
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_278ab120792c5b527cb9ea111658fc13 = L.circleMarker(
+                [32.08357107235882, 34.78958220741563],
+                {"bubblingMouseEvents": true, "color": "black", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "black", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 3, "stroke": true, "weight": 3}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            var poly_line_b5b4cca6bb1a9d4a41023ac288e349c6 = L.polyline(
+                [[32.09193678315572, 34.779604371352484], [32.097282910052265, 34.77803302828045]],
+                {"bubblingMouseEvents": true, "color": "#10B981", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#10B981", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            poly_line_b5b4cca6bb1a9d4a41023ac288e349c6.bindTooltip(
+                `<div>
+                     Hit: False<br>Az: 346.0<br>Len: 612.6
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_fb335cc1bb28c30a947041a4667f3c25 = L.circleMarker(
+                [32.09193678315572, 34.779604371352484],
+                {"bubblingMouseEvents": true, "color": "black", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "black", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 3, "stroke": true, "weight": 3}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            var poly_line_4aff3764c2822dcba64770f3ad19c898 = L.polyline(
+                [[32.09232076457226, 34.78700357348326], [32.0887492934407, 34.78462822267024]],
+                {"bubblingMouseEvents": true, "color": "#EF4444", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#EF4444", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            poly_line_4aff3764c2822dcba64770f3ad19c898.bindTooltip(
+                `<div>
+                     Hit: True<br>Az: 209.4<br>Len: 455.8
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_59e0b9d24ecf202c9040d4c3fbaca807 = L.circleMarker(
+                [32.09232076457226, 34.78700357348326],
+                {"bubblingMouseEvents": true, "color": "black", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "black", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 3, "stroke": true, "weight": 3}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            var poly_line_1933e243ba3c4adc36d6b3e5fea29fb0 = L.polyline(
+                [[32.08236916377918, 34.77631698602847], [32.075472535683744, 34.77786900822618]],
+                {"bubblingMouseEvents": true, "color": "#10B981", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#10B981", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            poly_line_1933e243ba3c4adc36d6b3e5fea29fb0.bindTooltip(
+                `<div>
+                     Hit: False<br>Az: 169.2<br>Len: 780.7
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_1ead79abd6cbe298da2ae1d063257d42 = L.circleMarker(
+                [32.08236916377918, 34.77631698602847],
+                {"bubblingMouseEvents": true, "color": "black", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "black", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 3, "stroke": true, "weight": 3}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            var poly_line_c712f1dc88abae4119c9eb0f648b22aa = L.polyline(
+                [[32.08142271086913, 34.78518344019307], [32.08209499597569, 34.779644276741884]],
+                {"bubblingMouseEvents": true, "color": "#EF4444", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#EF4444", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            poly_line_c712f1dc88abae4119c9eb0f648b22aa.bindTooltip(
+                `<div>
+                     Hit: True<br>Az: 278.2<br>Len: 527.2
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_4961ceab3072a3e7bee8a213848bf5c3 = L.circleMarker(
+                [32.08142271086913, 34.78518344019307],
+                {"bubblingMouseEvents": true, "color": "black", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "black", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 3, "stroke": true, "weight": 3}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            var poly_line_4d585ccc12e08ef483f176b87c2f7052 = L.polyline(
+                [[32.07952029598321, 34.78526369008244], [32.079717743948265, 34.784096899111056]],
+                {"bubblingMouseEvents": true, "color": "#10B981", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#10B981", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            poly_line_4d585ccc12e08ef483f176b87c2f7052.bindTooltip(
+                `<div>
+                     Hit: False<br>Az: 281.3<br>Len: 112.1
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_e16f8a884c1f000458990fc430a7406b = L.circleMarker(
+                [32.07952029598321, 34.78526369008244],
+                {"bubblingMouseEvents": true, "color": "black", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "black", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 3, "stroke": true, "weight": 3}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            var poly_line_dd4f14083634d004662521548cd1f6ee = L.polyline(
+                [[32.089731629911, 34.77793399131977], [32.090305111246145, 34.779032171681]],
+                {"bubblingMouseEvents": true, "color": "#10B981", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#10B981", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            poly_line_dd4f14083634d004662521548cd1f6ee.bindTooltip(
+                `<div>
+                     Hit: False<br>Az: 58.4<br>Len: 121.5
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_6d5cec062faad3a4375eecaec71cf8d3 = L.circleMarker(
+                [32.089731629911, 34.77793399131977],
+                {"bubblingMouseEvents": true, "color": "black", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "black", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 3, "stroke": true, "weight": 3}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            var poly_line_a19ea4989603193eee0ccfacc3818690 = L.polyline(
+                [[32.090595702048844, 34.779627367149956], [32.08606347517777, 34.779650868613274]],
+                {"bubblingMouseEvents": true, "color": "#EF4444", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#EF4444", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            poly_line_a19ea4989603193eee0ccfacc3818690.bindTooltip(
+                `<div>
+                     Hit: True<br>Az: 179.7<br>Len: 504.0
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_4359e8a15f438209e5a9f93a76cc8d84 = L.circleMarker(
+                [32.090595702048844, 34.779627367149956],
+                {"bubblingMouseEvents": true, "color": "black", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "black", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 3, "stroke": true, "weight": 3}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            var poly_line_3bc721ac71b996ea89da8a7da63178f2 = L.polyline(
+                [[32.08973629661744, 34.77437969521681], [32.09010560707144, 34.772594923366675]],
+                {"bubblingMouseEvents": true, "color": "#10B981", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#10B981", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            poly_line_3bc721ac71b996ea89da8a7da63178f2.bindTooltip(
+                `<div>
+                     Hit: False<br>Az: 283.7<br>Len: 173.1
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_7828265a053f9508082111d09dacc5a3 = L.circleMarker(
+                [32.08973629661744, 34.77437969521681],
+                {"bubblingMouseEvents": true, "color": "black", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "black", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 3, "stroke": true, "weight": 3}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            var poly_line_a1ba4c450d3dace9aee6950f52ea46ad = L.polyline(
+                [[32.07896007989036, 34.77558880199773], [32.07959313848411, 34.77701814558903]],
+                {"bubblingMouseEvents": true, "color": "#10B981", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#10B981", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            poly_line_a1ba4c450d3dace9aee6950f52ea46ad.bindTooltip(
+                `<div>
+                     Hit: False<br>Az: 62.4<br>Len: 152.0
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_7d756a8173dbcfdb454c9ea2d7b24c2c = L.circleMarker(
+                [32.07896007989036, 34.77558880199773],
+                {"bubblingMouseEvents": true, "color": "black", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "black", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 3, "stroke": true, "weight": 3}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            var poly_line_6ac62c85a5332f2078444c2ee1142264 = L.polyline(
+                [[32.08865715121968, 34.78001039355269], [32.08975788775664, 34.78109188067289]],
+                {"bubblingMouseEvents": true, "color": "#EF4444", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#EF4444", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            poly_line_6ac62c85a5332f2078444c2ee1142264.bindTooltip(
+                `<div>
+                     Hit: True<br>Az: 39.8<br>Len: 159.3
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_fca7f577eb8c73fb16e21907ea289cf5 = L.circleMarker(
+                [32.08865715121968, 34.78001039355269],
+                {"bubblingMouseEvents": true, "color": "black", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "black", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 3, "stroke": true, "weight": 3}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            var poly_line_6e1f35a817dcc448a0a500eb0e8b5037 = L.polyline(
+                [[32.0795777518243, 34.781082949775694], [32.077252938845014, 34.78365762407226]],
+                {"bubblingMouseEvents": true, "color": "#10B981", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#10B981", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            poly_line_6e1f35a817dcc448a0a500eb0e8b5037.bindTooltip(
+                `<div>
+                     Hit: False<br>Az: 136.8<br>Len: 354.5
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_d8101d9a1b1a2a2cdbe9c30cc22f5714 = L.circleMarker(
+                [32.0795777518243, 34.781082949775694],
+                {"bubblingMouseEvents": true, "color": "black", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "black", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 3, "stroke": true, "weight": 3}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            var poly_line_4e4663323798a10513aba74a29fd1155 = L.polyline(
+                [[32.09292744292942, 34.778115515138566], [32.08602690015406, 34.77596736920314]],
+                {"bubblingMouseEvents": true, "color": "#EF4444", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#EF4444", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            poly_line_4e4663323798a10513aba74a29fd1155.bindTooltip(
+                `<div>
+                     Hit: True<br>Az: 194.8<br>Len: 793.5
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_0f70b7386160c830d57c8bb0fe25ea7f = L.circleMarker(
+                [32.09292744292942, 34.778115515138566],
+                {"bubblingMouseEvents": true, "color": "black", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "black", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 3, "stroke": true, "weight": 3}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            var poly_line_0c55805b52bc0e390c15970a240014e2 = L.polyline(
+                [[32.081701558234045, 34.78495119845507], [32.08211221504035, 34.78698106858903]],
+                {"bubblingMouseEvents": true, "color": "#10B981", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#10B981", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            poly_line_0c55805b52bc0e390c15970a240014e2.bindTooltip(
+                `<div>
+                     Hit: False<br>Az: 76.6<br>Len: 196.6
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_c78030d748a0aae2d254b894606ae4d7 = L.circleMarker(
+                [32.081701558234045, 34.78495119845507],
+                {"bubblingMouseEvents": true, "color": "black", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "black", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 3, "stroke": true, "weight": 3}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            var poly_line_7b770244b6a644efe1c1ee9feb6838e1 = L.polyline(
+                [[32.082194577766444, 34.77242884298409], [32.08915925328817, 34.77388436802849]],
+                {"bubblingMouseEvents": true, "color": "#10B981", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#10B981", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            poly_line_7b770244b6a644efe1c1ee9feb6838e1.bindTooltip(
+                `<div>
+                     Hit: False<br>Az: 10.0<br>Len: 786.5
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_e205c32ad3c2d9bb0ebf8523201056c2 = L.circleMarker(
+                [32.082194577766444, 34.77242884298409],
+                {"bubblingMouseEvents": true, "color": "black", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "black", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 3, "stroke": true, "weight": 3}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            var poly_line_9a9b55c2cf704d9d45563c4a815709ec = L.polyline(
+                [[32.0838852514026, 34.77529020838802], [32.081876584960334, 34.783226899219876]],
+                {"bubblingMouseEvents": true, "color": "#EF4444", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#EF4444", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            poly_line_9a9b55c2cf704d9d45563c4a815709ec.bindTooltip(
+                `<div>
+                     Hit: True<br>Az: 106.6<br>Len: 780.4
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_d27a5e05eeed3b02568bb2bf7529aba5 = L.circleMarker(
+                [32.0838852514026, 34.77529020838802],
+                {"bubblingMouseEvents": true, "color": "black", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "black", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 3, "stroke": true, "weight": 3}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            var poly_line_6be222c683e5bad0e062ebb5aba337ac = L.polyline(
+                [[32.08657221532735, 34.7715346145757], [32.08685011848983, 34.76471850333915]],
+                {"bubblingMouseEvents": true, "color": "#10B981", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#10B981", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            poly_line_6be222c683e5bad0e062ebb5aba337ac.bindTooltip(
+                `<div>
+                     Hit: False<br>Az: 272.8<br>Len: 642.9
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_665cadf403bd34e2a35f35691577b305 = L.circleMarker(
+                [32.08657221532735, 34.7715346145757],
+                {"bubblingMouseEvents": true, "color": "black", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "black", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 3, "stroke": true, "weight": 3}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            var poly_line_ec812bd9ed4c97a01851821821484687 = L.polyline(
+                [[32.08743506027069, 34.7733724200271], [32.08856072614417, 34.77695395406083]],
+                {"bubblingMouseEvents": true, "color": "#10B981", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#10B981", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            poly_line_ec812bd9ed4c97a01851821821484687.bindTooltip(
+                `<div>
+                     Hit: False<br>Az: 69.6<br>Len: 359.9
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_481362619618091d5117e4dd53ad6657 = L.circleMarker(
+                [32.08743506027069, 34.7733724200271],
+                {"bubblingMouseEvents": true, "color": "black", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "black", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 3, "stroke": true, "weight": 3}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            var poly_line_82ec6cd8f80bd6d8d9a17a78d4a50c09 = L.polyline(
+                [[32.07730964264084, 34.78109924043629], [32.08004328289003, 34.78347370821617]],
+                {"bubblingMouseEvents": true, "color": "#10B981", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#10B981", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            poly_line_82ec6cd8f80bd6d8d9a17a78d4a50c09.bindTooltip(
+                `<div>
+                     Hit: False<br>Az: 36.4<br>Len: 377.4
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_d7f672fd03f33496491370489d94fa1a = L.circleMarker(
+                [32.07730964264084, 34.78109924043629],
+                {"bubblingMouseEvents": true, "color": "black", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "black", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 3, "stroke": true, "weight": 3}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            var poly_line_06cc86ee640b0a6b0cb6737828aa3553 = L.polyline(
+                [[32.076589293443526, 34.779624991134796], [32.073736549270954, 34.774791548887585]],
+                {"bubblingMouseEvents": true, "color": "#10B981", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#10B981", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            poly_line_06cc86ee640b0a6b0cb6737828aa3553.bindTooltip(
+                `<div>
+                     Hit: False<br>Az: 235.1<br>Len: 555.0
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_03a8051f4a0c0b9168e5fc9448b333fb = L.circleMarker(
+                [32.076589293443526, 34.779624991134796],
+                {"bubblingMouseEvents": true, "color": "black", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "black", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 3, "stroke": true, "weight": 3}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            var poly_line_05b1c83ec79b33d30f3396b49d46a4cb = L.polyline(
+                [[32.08270898082197, 34.77618145080661], [32.08087192961231, 34.771227366568475]],
+                {"bubblingMouseEvents": true, "color": "#10B981", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#10B981", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            poly_line_05b1c83ec79b33d30f3396b49d46a4cb.bindTooltip(
+                `<div>
+                     Hit: False<br>Az: 246.4<br>Len: 509.5
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_d0fa63cd39592d5b19d15994f1f57e1a = L.circleMarker(
+                [32.08270898082197, 34.77618145080661],
+                {"bubblingMouseEvents": true, "color": "black", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "black", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 3, "stroke": true, "weight": 3}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            var poly_line_7f4e7e697a8f526b8dcb09b21ad7fa1f = L.polyline(
+                [[32.08918984037425, 34.77923193389122], [32.091421127058055, 34.78217034445158]],
+                {"bubblingMouseEvents": true, "color": "#10B981", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#10B981", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            poly_line_7f4e7e697a8f526b8dcb09b21ad7fa1f.bindTooltip(
+                `<div>
+                     Hit: False<br>Az: 48.1<br>Len: 371.7
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_a87a78287e7ea7cca73929eba04a9e29 = L.circleMarker(
+                [32.08918984037425, 34.77923193389122],
+                {"bubblingMouseEvents": true, "color": "black", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "black", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 3, "stroke": true, "weight": 3}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            var poly_line_80a640b26ff31b7e14414ee6ec1f3e08 = L.polyline(
+                [[32.08854018401417, 34.78639952851463], [32.09470928103966, 34.788847685289866]],
+                {"bubblingMouseEvents": true, "color": "#10B981", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#10B981", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            poly_line_80a640b26ff31b7e14414ee6ec1f3e08.bindTooltip(
+                `<div>
+                     Hit: False<br>Az: 18.6<br>Len: 723.7
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_d8df4872abc90e59a94dcb1daad4ef2d = L.circleMarker(
+                [32.08854018401417, 34.78639952851463],
+                {"bubblingMouseEvents": true, "color": "black", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "black", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 3, "stroke": true, "weight": 3}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            var poly_line_bb5053a53ff7448e907443073acc0506 = L.polyline(
+                [[32.08277342833794, 34.77166947285929], [32.08121675427006, 34.76673663769591]],
+                {"bubblingMouseEvents": true, "color": "#10B981", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#10B981", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            poly_line_bb5053a53ff7448e907443073acc0506.bindTooltip(
+                `<div>
+                     Hit: False<br>Az: 249.6<br>Len: 495.9
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_f30fa4c875c883fe8be8e4b297fc7876 = L.circleMarker(
+                [32.08277342833794, 34.77166947285929],
+                {"bubblingMouseEvents": true, "color": "black", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "black", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 3, "stroke": true, "weight": 3}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            var poly_line_9d4c879495a8c72e19f89469309c7123 = L.polyline(
+                [[32.090847299035346, 34.783224853075346], [32.095783950768265, 34.7802037299387]],
+                {"bubblingMouseEvents": true, "color": "#10B981", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#10B981", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            poly_line_9d4c879495a8c72e19f89469309c7123.bindTooltip(
+                `<div>
+                     Hit: False<br>Az: 332.6<br>Len: 618.3
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_53956b67af641ba2aa61e94514eb625e = L.circleMarker(
+                [32.090847299035346, 34.783224853075346],
+                {"bubblingMouseEvents": true, "color": "black", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "black", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 3, "stroke": true, "weight": 3}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            var poly_line_03ddf3e063a939d0e2db7b28e078cd53 = L.polyline(
+                [[32.089525535474074, 34.772953401693], [32.091674859956136, 34.77862790379573]],
+                {"bubblingMouseEvents": true, "color": "#10B981", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#10B981", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            poly_line_03ddf3e063a939d0e2db7b28e078cd53.bindTooltip(
+                `<div>
+                     Hit: False<br>Az: 65.9<br>Len: 585.6
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_faae47e59d37dc6e1e989083ccce5bad = L.circleMarker(
+                [32.089525535474074, 34.772953401693],
+                {"bubblingMouseEvents": true, "color": "black", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "black", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 3, "stroke": true, "weight": 3}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            var poly_line_cf1bb20704659dee6844b6c0117183ef = L.polyline(
+                [[32.0800319826758, 34.77443480974191], [32.08020126423227, 34.78096847988786]],
+                {"bubblingMouseEvents": true, "color": "#10B981", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#10B981", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            poly_line_cf1bb20704659dee6844b6c0117183ef.bindTooltip(
+                `<div>
+                     Hit: False<br>Az: 88.2<br>Len: 615.9
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_3da0487b16ffc2dbd464570a02bf9bb5 = L.circleMarker(
+                [32.0800319826758, 34.77443480974191],
+                {"bubblingMouseEvents": true, "color": "black", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "black", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 3, "stroke": true, "weight": 3}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            var poly_line_63b960d02a8b70a324d9b85a2c2908f0 = L.polyline(
+                [[32.08574826951402, 34.78886083965305], [32.080673661796325, 34.7857313463538]],
+                {"bubblingMouseEvents": true, "color": "#EF4444", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#EF4444", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            poly_line_63b960d02a8b70a324d9b85a2c2908f0.bindTooltip(
+                `<div>
+                     Hit: True<br>Az: 207.6<br>Len: 636.7
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_99d0a18f987f125457fa7088433ff178 = L.circleMarker(
+                [32.08574826951402, 34.78886083965305],
+                {"bubblingMouseEvents": true, "color": "black", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "black", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 3, "stroke": true, "weight": 3}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            var poly_line_449932540558ee771550f6224d676ff6 = L.polyline(
+                [[32.09202438346313, 34.78879422783184], [32.08873028927682, 34.79406374018837]],
+                {"bubblingMouseEvents": true, "color": "#10B981", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#10B981", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            poly_line_449932540558ee771550f6224d676ff6.bindTooltip(
+                `<div>
+                     Hit: False<br>Az: 126.4<br>Len: 616.9
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_8a4d481280d38103747b26f0c8af704b = L.circleMarker(
+                [32.09202438346313, 34.78879422783184],
+                {"bubblingMouseEvents": true, "color": "black", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "black", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 3, "stroke": true, "weight": 3}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            var poly_line_ec847215d9934b6876300aacf76f7411 = L.polyline(
+                [[32.081982957184856, 34.78796870108474], [32.0772427136001, 34.793224647200525]],
+                {"bubblingMouseEvents": true, "color": "#10B981", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#10B981", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            poly_line_ec847215d9934b6876300aacf76f7411.bindTooltip(
+                `<div>
+                     Hit: False<br>Az: 136.8<br>Len: 723.2
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_7b56f5a28442c687d928d38aafe13fd6 = L.circleMarker(
+                [32.081982957184856, 34.78796870108474],
+                {"bubblingMouseEvents": true, "color": "black", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "black", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 3, "stroke": true, "weight": 3}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            var poly_line_f775471a159178eecfbfcbe3b43d5d15 = L.polyline(
+                [[32.077486594920686, 34.77858807628979], [32.079790604488636, 34.78348697652271]],
+                {"bubblingMouseEvents": true, "color": "#10B981", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#10B981", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+    
+            poly_line_f775471a159178eecfbfcbe3b43d5d15.bindTooltip(
+                `<div>
+                     Hit: False<br>Az: 61.0<br>Len: 527.9
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_f38ed0d0d611500735e80f63ec2bd7cb = L.circleMarker(
+                [32.077486594920686, 34.77858807628979],
+                {"bubblingMouseEvents": true, "color": "black", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "black", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 3, "stroke": true, "weight": 3}
+            ).addTo(map_62d3245f3e9bcadfcb28e4b5b572a008);
+        
+</script>
+</html>

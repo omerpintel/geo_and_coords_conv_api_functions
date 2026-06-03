@@ -46,14 +46,14 @@ std::string PolyToStr(const SPointNE* poly, uint16_t count) {
 ApiResult CallIsInside(const SPointNE* poly, uint16_t count, const SPointNE& pt, float rad) {
     uint8_t res = false;
     uint8_t state = EIsInsideResult::IS_INSIDE_OK;
-    isInsidePolygon(poly, count, pt, rad, &res, &state);
+    isInsidePolygonNED(poly, count, pt, rad, &res, &state);
     return { res, state };
 }
 
 ApiResult CallIntersect(const SPointNE* poly, uint16_t count, const SPointNE& pt, float az, float len) {
     uint8_t res = false;
     uint8_t state = ELineIntersectResult::LINE_INTERSECT_OK;
-    doesLineIntersectPolygon(poly, count, pt, az, len, &res, &state);
+    doesLineIntersectPolygonNED(poly, count, pt, az, len, &res, &state);
     return { res, state };
 }
 
@@ -298,6 +298,71 @@ void test_is_inside_edge_cases() {
     RunTest_Circle("Pentagon Outside", pentagon, 5, { 0.0f, 0.0f }, 0.0f, false);
 }
 
+// --- Radius=0 Regression: All isInsidePolygon scenarios with radius forced to 0 ---
+void test_is_inside_radius_zero() {
+    std::cout << "\n--- Regression: isInsidePolygon (radius=0 only) ---\n";
+
+    // Re-run every geometric scenario with radius=0 to verify pure point-in-polygon logic.
+    // Tests that relied on radius for collision should now report Safe (outside).
+
+    // Square polygon scenarios
+    RunTest_Circle("R0 Inside Strict", square_polygon, square_size, { 5.0f, 5.0f }, 0.0f, true);
+    RunTest_Circle("R0 Outside Strict", square_polygon, square_size, { 20.0f, 5.0f }, 0.0f, false);
+    RunTest_Circle("R0 On Boundary", square_polygon, square_size, { 0.0f, 5.0f }, 0.0f, true);
+    RunTest_Circle("R0 Near Boundary (was radius hit)", square_polygon, square_size, { -1.0f, 5.0f }, 0.0f, false);
+    RunTest_Circle("R0 Far Outside (was safe radius)", square_polygon, square_size, { -5.0f, 5.0f }, 0.0f, false);
+    RunTest_Circle("R0 Far Outside Opt", square_polygon, square_size, { 20.0f, 20.0f }, 0.0f, false);
+    RunTest_Circle("R0 Point on East Edge", square_polygon, square_size, { 5.0f, 10.0f }, 0.0f, true);
+
+    // U-shape scenarios
+    RunTest_Circle("R0 Concave Bay", u_shape_pts, u_shape_size, { 5.0f, 8.0f }, 0.0f, false);
+    RunTest_Circle("R0 Concave Bay (was radius hit)", u_shape_pts, u_shape_size, { 5.0f, 8.0f }, 0.0f, false);
+
+    // Triangle scenarios
+    RunTest_Circle("R0 Sharp Vertex Tip", triangle_pts, triangle_size, { 10.0f, 2.0f }, 0.0f, true);
+    RunTest_Circle("R0 Near Sharp Tip (was radius hit)", triangle_pts, triangle_size, { 10.1f, 2.0f }, 0.0f, false);
+
+    // Edge cases - all with radius=0
+    RunTest_Circle("R0 Exact Vertex (0,0)", square_polygon, square_size, { 0.0f, 0.0f }, 0.0f, true);
+    RunTest_Circle("R0 Exact Vertex (10,10)", square_polygon, square_size, { 10.0f, 10.0f }, 0.0f, true);
+    RunTest_Circle("R0 Radius==Dist point (outside)", square_polygon, square_size, { -2.0f, 5.0f }, 0.0f, false);
+
+    // CCW polygon
+    SPointNE ccw_square[] = { {10.0f, 0.0f}, {10.0f, 10.0f}, {0.0f, 10.0f}, {0.0f, 0.0f} };
+    RunTest_Circle("R0 CCW Inside", ccw_square, 4, { 5.0f, 5.0f }, 0.0f, true);
+    RunTest_Circle("R0 CCW Outside", ccw_square, 4, { 20.0f, 5.0f }, 0.0f, false);
+
+    // Bowtie
+    SPointNE bowtie[] = { {0.0f, 0.0f}, {10.0f, 10.0f}, {10.0f, 0.0f}, {0.0f, 10.0f} };
+    RunTest_Circle("R0 Bowtie Center", bowtie, 4, { 5.0f, 5.0f }, 0.0f, true);
+
+    // Negative space
+    SPointNE neg_square[] = { {-10.0f, -10.0f}, {-10.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, -10.0f} };
+    RunTest_Circle("R0 Negative Inside", neg_square, 4, { -5.0f, -5.0f }, 0.0f, true);
+    RunTest_Circle("R0 Negative Outside", neg_square, 4, { 5.0f, 5.0f }, 0.0f, false);
+
+    // Thin polygon
+    SPointNE thin_poly[] = { {0.0f, 0.0f}, {0.0f, 100.0f}, {1.0f, 100.0f}, {1.0f, 0.0f} };
+    RunTest_Circle("R0 Thin Inside", thin_poly, 4, { 0.5f, 50.0f }, 0.0f, true);
+    RunTest_Circle("R0 Thin Outside (was miss)", thin_poly, 4, { -1.0f, 50.0f }, 0.0f, false);
+    RunTest_Circle("R0 Thin Outside (was hit)", thin_poly, 4, { -0.5f, 50.0f }, 0.0f, false);
+
+    // L-shape
+    SPointNE L_shape[] = { {0.0f,0.0f}, {0.0f,10.0f}, {5.0f,10.0f}, {5.0f,5.0f}, {10.0f,5.0f}, {10.0f,0.0f} };
+    RunTest_Circle("R0 L-Shape Arm", L_shape, 6, { 2.0f, 8.0f }, 0.0f, true);
+    RunTest_Circle("R0 L-Shape Base", L_shape, 6, { 8.0f, 2.0f }, 0.0f, true);
+    RunTest_Circle("R0 L-Shape Notch", L_shape, 6, { 8.0f, 8.0f }, 0.0f, false);
+
+    // Origin centered
+    SPointNE centered[] = { {-5.0f, -5.0f}, {-5.0f, 5.0f}, {5.0f, 5.0f}, {5.0f, -5.0f} };
+    RunTest_Circle("R0 Origin Centered", centered, 4, { 0.0f, 0.0f }, 0.0f, true);
+
+    // Pentagon
+    SPointNE pentagon[] = { {5.0f, 0.0f}, {1.5f, 4.8f}, {3.1f, 8.0f}, {6.9f, 8.0f}, {8.5f, 4.8f} };
+    RunTest_Circle("R0 Pentagon Inside", pentagon, 5, { 5.0f, 5.0f }, 0.0f, true);
+    RunTest_Circle("R0 Pentagon Outside", pentagon, 5, { 0.0f, 0.0f }, 0.0f, false);
+}
+
 // --- Edge Case Tests: doesLineIntersectPolygon ---
 void test_intersection_edge_cases() {
     std::cout << "\n--- Edge Cases: doesLineIntersectPolygon ---\n";
@@ -390,6 +455,232 @@ void verify_full_coverage(int total_expected, ECovFuncID funcID, std::string fun
 #endif
 }
 
+// ========================================================================
+// GEO (Geodetic) Tests
+// ========================================================================
+
+// Helper: Call isInsidePolygonGeo and check result
+struct GeoApiResult {
+    uint8_t isCollision;
+    uint8_t state;
+};
+
+GeoApiResult CallIsInsideGeo(const SPointGeo* poly, uint16_t count, const SPointGeo& pt, float rad) {
+    uint8_t res = false;
+    uint8_t state = EIsInsideGeoResult::IS_INSIDE_GEO_OK;
+    isInsidePolygonGeo(poly, count, pt, rad, &res, &state);
+    return { res, state };
+}
+
+GeoApiResult CallIntersectGeo(const SPointGeo* poly, uint16_t count, const SPointGeo& pt, float az, float len) {
+    uint8_t res = false;
+    uint8_t state = ELineIntersectGeoResult::LINE_INTERSECT_GEO_OK;
+    doesLineIntersectPolygonGeo(poly, count, pt, az, len, &res, &state);
+    return { res, state };
+}
+
+void RunTest_CircleGeo(const std::string& testName, const SPointGeo* poly, uint16_t count, SPointGeo pt, float rad, bool expectCollision) {
+    GeoApiResult result = CallIsInsideGeo(poly, count, pt, rad);
+    bool actualCollision = (result.state == EIsInsideGeoResult::IS_INSIDE_GEO_OK && result.isCollision);
+    bool passed = (actualCollision == expectCollision);
+
+    if (passed) {
+        std::cout << "[PASS] " << testName << std::endl;
+        g_tests_passed++;
+    } else {
+        std::cout << "[FAIL] " << testName << " | Expected: " << expectCollision << ", Got: " << actualCollision << std::endl;
+        g_tests_failed++;
+    }
+}
+
+void RunTest_LineGeo(const std::string& testName, const SPointGeo* poly, uint16_t count, SPointGeo pt, float az, float len, bool expectCollision) {
+    GeoApiResult result = CallIntersectGeo(poly, count, pt, az, len);
+    bool actualCollision = (result.state == ELineIntersectGeoResult::LINE_INTERSECT_GEO_OK && result.isCollision);
+    bool passed = (actualCollision == expectCollision);
+
+    if (passed) {
+        std::cout << "[PASS] " << testName << std::endl;
+        g_tests_passed++;
+    } else {
+        std::cout << "[FAIL] " << testName << " | Expected: " << expectCollision << ", Got: " << actualCollision << std::endl;
+        g_tests_failed++;
+    }
+}
+
+#define ASSERT_GEO_ERROR_STATE(call, expectedState, msg) \
+    { \
+        GeoApiResult res = call; \
+        if (res.state == expectedState) { \
+            std::cout << "[PASS] " << msg << std::endl; \
+            g_tests_passed++; \
+        } else { \
+            std::cout << "[FAIL] " << msg << " | Expected State: " << (int)expectedState << ", Got: " << (int)res.state << std::endl; \
+            g_tests_failed++; \
+        } \
+    }
+
+// --- GEO Test Data ---
+// Square polygon ~500m around Tel Aviv (32.0853, 34.7818)
+// Approx 500m ≈ 0.0045 degrees latitude, 0.005 degrees longitude at this latitude
+static const double GEO_CENTER_LAT = 32.0853;
+static const double GEO_CENTER_LON = 34.7818;
+static const double GEO_HALF_SIZE_LAT = 0.00225; // ~250m in latitude
+static const double GEO_HALF_SIZE_LON = 0.0025;  // ~250m in longitude
+
+SPointGeo geo_square_polygon[] = {
+    { GEO_CENTER_LAT - GEO_HALF_SIZE_LAT, GEO_CENTER_LON - GEO_HALF_SIZE_LON, 0.0 },
+    { GEO_CENTER_LAT - GEO_HALF_SIZE_LAT, GEO_CENTER_LON + GEO_HALF_SIZE_LON, 0.0 },
+    { GEO_CENTER_LAT + GEO_HALF_SIZE_LAT, GEO_CENTER_LON + GEO_HALF_SIZE_LON, 0.0 },
+    { GEO_CENTER_LAT + GEO_HALF_SIZE_LAT, GEO_CENTER_LON - GEO_HALF_SIZE_LON, 0.0 }
+};
+uint16_t geo_square_size = 4;
+
+// Triangle polygon
+SPointGeo geo_triangle[] = {
+    { 32.080, 34.775, 0.0 },
+    { 32.090, 34.782, 0.0 },
+    { 32.080, 34.789, 0.0 }
+};
+uint16_t geo_triangle_size = 3;
+
+void test_is_inside_geo() {
+    std::cout << "\n--- Testing isInsidePolygonGeo ---\n";
+
+    // 1. Inside center -> Collision
+    RunTest_CircleGeo("GEO Inside Center", geo_square_polygon, geo_square_size,
+        { GEO_CENTER_LAT, GEO_CENTER_LON, 0.0 }, 0.0f, true);
+
+    // 2. Outside far -> Safe
+    RunTest_CircleGeo("GEO Outside Far", geo_square_polygon, geo_square_size,
+        { 32.10, 34.79, 0.0 }, 0.0f, false);
+
+    // 3. Outside near, radius hits -> Collision
+    // Point ~50m outside the north edge, radius 100m
+    RunTest_CircleGeo("GEO Radius Hit", geo_square_polygon, geo_square_size,
+        { GEO_CENTER_LAT + GEO_HALF_SIZE_LAT + 0.00045, GEO_CENTER_LON, 0.0 }, 100.0f, true);
+
+    // 4. Outside near, radius safe -> Safe
+    // Point ~300m outside the north edge, radius 50m
+    RunTest_CircleGeo("GEO Radius Safe", geo_square_polygon, geo_square_size,
+        { GEO_CENTER_LAT + GEO_HALF_SIZE_LAT + 0.0027, GEO_CENTER_LON, 0.0 }, 50.0f, false);
+
+    // 5. Inside triangle
+    RunTest_CircleGeo("GEO Triangle Inside", geo_triangle, geo_triangle_size,
+        { 32.084, 34.782, 0.0 }, 0.0f, true);
+
+    // 6. Outside triangle
+    RunTest_CircleGeo("GEO Triangle Outside", geo_triangle, geo_triangle_size,
+        { 32.070, 34.770, 0.0 }, 0.0f, false);
+
+    // 7. On boundary (vertex) -> Collision
+    RunTest_CircleGeo("GEO On Vertex", geo_triangle, geo_triangle_size,
+        { 32.080, 34.775, 0.0 }, 0.0f, true);
+
+    // 8. On closing edge (last->first vertex) -> Collision
+    // Midpoint of west side: vertex[3] to vertex[0]
+    RunTest_CircleGeo("GEO On Closing Edge", geo_square_polygon, geo_square_size,
+        { GEO_CENTER_LAT, GEO_CENTER_LON - GEO_HALF_SIZE_LON, 0.0 }, 0.0f, true);
+
+    // --- Validation Tests ---
+    ASSERT_GEO_ERROR_STATE(CallIsInsideGeo(nullptr, 0, { 32.0, 34.0, 0 }, 0),
+        EIsInsideGeoResult::IS_INSIDE_GEO_POLYGON_IS_NULL_PTR, "GEO Null Poly");
+
+    ASSERT_GEO_ERROR_STATE(CallIsInsideGeo(geo_square_polygon, 2, { 32.0, 34.0, 0 }, 0),
+        EIsInsideGeoResult::IS_INSIDE_GEO_POLYGON_WITH_LESS_THAN_3_POINTS, "GEO Small Poly");
+
+    // Exceed max vertices
+    SPointGeo big_poly[MAX_POLYGON_VERTICES + 1];
+    for (int i = 0; i <= MAX_POLYGON_VERTICES; ++i) {
+        big_poly[i] = { 32.0 + i * 0.001, 34.0, 0.0 };
+    }
+    ASSERT_GEO_ERROR_STATE(CallIsInsideGeo(big_poly, MAX_POLYGON_VERTICES + 1, { 32.0, 34.0, 0 }, 0),
+        EIsInsideGeoResult::IS_INSIDE_GEO_POLYGON_EXCEEDS_MAX_VERTICES, "GEO Max Vertices");
+}
+
+// --- Radius=0 Regression: All isInsidePolygonGeo scenarios with radius forced to 0 ---
+void test_is_inside_geo_radius_zero() {
+    std::cout << "\n--- Regression: isInsidePolygonGeo (radius=0 only) ---\n";
+
+    // Square polygon - inside/outside
+    RunTest_CircleGeo("R0 GEO Inside Center", geo_square_polygon, geo_square_size,
+        { GEO_CENTER_LAT, GEO_CENTER_LON, 0.0 }, 0.0f, true);
+    RunTest_CircleGeo("R0 GEO Outside Far", geo_square_polygon, geo_square_size,
+        { 32.10, 34.79, 0.0 }, 0.0f, false);
+
+    // Points that were outside but radius made them collide - now radius=0 -> Safe
+    RunTest_CircleGeo("R0 GEO Near North (was radius hit)", geo_square_polygon, geo_square_size,
+        { GEO_CENTER_LAT + GEO_HALF_SIZE_LAT + 0.00045, GEO_CENTER_LON, 0.0 }, 0.0f, false);
+    RunTest_CircleGeo("R0 GEO Far North (was radius safe)", geo_square_polygon, geo_square_size,
+        { GEO_CENTER_LAT + GEO_HALF_SIZE_LAT + 0.0027, GEO_CENTER_LON, 0.0 }, 0.0f, false);
+    RunTest_CircleGeo("R0 GEO Near South Edge Outside", geo_square_polygon, geo_square_size,
+        { GEO_CENTER_LAT - GEO_HALF_SIZE_LAT - 0.000027, GEO_CENTER_LON, 0.0 }, 0.0f, false);
+
+    // Triangle
+    RunTest_CircleGeo("R0 GEO Triangle Inside", geo_triangle, geo_triangle_size,
+        { 32.084, 34.782, 0.0 }, 0.0f, true);
+    RunTest_CircleGeo("R0 GEO Triangle Outside", geo_triangle, geo_triangle_size,
+        { 32.070, 34.770, 0.0 }, 0.0f, false);
+
+    // Boundary
+    RunTest_CircleGeo("R0 GEO On Vertex", geo_triangle, geo_triangle_size,
+        { 32.080, 34.775, 0.0 }, 0.0f, true);
+    RunTest_CircleGeo("R0 GEO On Closing Edge", geo_square_polygon, geo_square_size,
+        { GEO_CENTER_LAT, GEO_CENTER_LON - GEO_HALF_SIZE_LON, 0.0 }, 0.0f, true);
+
+    // Additional edge points with radius=0
+    // South edge midpoint
+    RunTest_CircleGeo("R0 GEO On South Edge", geo_square_polygon, geo_square_size,
+        { GEO_CENTER_LAT - GEO_HALF_SIZE_LAT, GEO_CENTER_LON, 0.0 }, 0.0f, true);
+    // East edge midpoint
+    RunTest_CircleGeo("R0 GEO On East Edge", geo_square_polygon, geo_square_size,
+        { GEO_CENTER_LAT, GEO_CENTER_LON + GEO_HALF_SIZE_LON, 0.0 }, 0.0f, true);
+}
+
+void test_intersection_geo() {
+    std::cout << "\n--- Testing doesLineIntersectPolygonGeo ---\n";
+
+    // 1. Line from inside -> Collision
+    RunTest_LineGeo("GEO Line From Inside", geo_square_polygon, geo_square_size,
+        { GEO_CENTER_LAT, GEO_CENTER_LON, 0.0 }, 0.0f, 500.0f, true);
+
+    // 2. Line from outside crossing polygon -> Collision
+    RunTest_LineGeo("GEO Line Crossing In", geo_square_polygon, geo_square_size,
+        { GEO_CENTER_LAT, GEO_CENTER_LON - 0.01, 0.0 }, 90.0f, 2000.0f, true);
+
+    // 3. Line from outside going away -> Safe
+    RunTest_LineGeo("GEO Line Away", geo_square_polygon, geo_square_size,
+        { GEO_CENTER_LAT + 0.01, GEO_CENTER_LON, 0.0 }, 0.0f, 500.0f, false);
+
+    // 4. Line too short to reach -> Safe
+    RunTest_LineGeo("GEO Line Too Short", geo_square_polygon, geo_square_size,
+        { GEO_CENTER_LAT, GEO_CENTER_LON - 0.01, 0.0 }, 90.0f, 100.0f, false);
+
+    // 5. Line hitting triangle
+    RunTest_LineGeo("GEO Triangle Line Hit", geo_triangle, geo_triangle_size,
+        { 32.085, 34.770, 0.0 }, 90.0f, 2000.0f, true);
+
+    // 6. Line missing triangle
+    RunTest_LineGeo("GEO Triangle Line Miss", geo_triangle, geo_triangle_size,
+        { 32.095, 34.770, 0.0 }, 90.0f, 2000.0f, false);
+
+    // --- Validation Tests ---
+    ASSERT_GEO_ERROR_STATE(CallIntersectGeo(nullptr, 0, { 32.0, 34.0, 0 }, 0.0f, 100.0f),
+        ELineIntersectGeoResult::LINE_INTERSECT_GEO_POLYGON_IS_NULL_PTR, "GEO Line Null Poly");
+
+    ASSERT_GEO_ERROR_STATE(CallIntersectGeo(geo_square_polygon, 2, { 32.0, 34.0, 0 }, 0.0f, 100.0f),
+        ELineIntersectGeoResult::LINE_INTERSECT_GEO_POLYGON_WITH_LESS_THAN_3_POINTS, "GEO Line Small Poly");
+
+    ASSERT_GEO_ERROR_STATE(CallIntersectGeo(geo_square_polygon, geo_square_size, { 32.0, 34.0, 0 }, 0.0f, 0.0f),
+        ELineIntersectGeoResult::LINE_INTERSECT_GEO_MAX_LENGTH_LESS_OR_EQUAL_TO_ZERO, "GEO Line Zero Len");
+
+    SPointGeo big_poly[MAX_POLYGON_VERTICES + 1];
+    for (int i = 0; i <= MAX_POLYGON_VERTICES; ++i) {
+        big_poly[i] = { 32.0 + i * 0.001, 34.0, 0.0 };
+    }
+    ASSERT_GEO_ERROR_STATE(CallIntersectGeo(big_poly, MAX_POLYGON_VERTICES + 1, { 32.0, 34.0, 0 }, 0.0f, 100.0f),
+        ELineIntersectGeoResult::LINE_INTERSECT_GEO_POLYGON_EXCEEDS_MAX_VERTICES, "GEO Line Max Vertices");
+}
+
 int main() {
 #if defined(_DEBUG) || !defined(NDEBUG)
 #ifdef _WIN32
@@ -397,15 +688,25 @@ int main() {
 #endif
 #endif
 
-    // 1. Test isInsidePolygon
+    // 1. Test isInsidePolygonNED
     test_is_inside();
     test_is_inside_edge_cases();
-    verify_full_coverage(11, ECovFuncID::IsInside, "isInsidePolygon");
+    test_is_inside_radius_zero();
+    verify_full_coverage(11, ECovFuncID::IsInside, "isInsidePolygonNED");
 
-    // 2. Test doesLineIntersectPolygon
+    // 2. Test doesLineIntersectPolygonNED
     test_intersection();
     test_intersection_edge_cases();
-    verify_full_coverage(7, ECovFuncID::Intersect, "doesLineIntersectPolygon");
+    verify_full_coverage(7, ECovFuncID::Intersect, "doesLineIntersectPolygonNED");
+
+    // 3. Test isInsidePolygonGeo
+    test_is_inside_geo();
+    test_is_inside_geo_radius_zero();
+    verify_full_coverage(11, ECovFuncID::IsInsideGeo, "isInsidePolygonGeo");
+
+    // 4. Test doesLineIntersectPolygonGeo
+    test_intersection_geo();
+    verify_full_coverage(9, ECovFuncID::IntersectGeo, "doesLineIntersectPolygonGeo");
 
     std::cout << "\n---------------------------------\n";
     std::cout << "SUMMARY: Passed: " << g_tests_passed << ", Failed: " << g_tests_failed << std::endl;
@@ -415,4 +716,3 @@ int main() {
 
     return (g_tests_failed == 0) ? 0 : 1;
 }
-

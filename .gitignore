@@ -10,7 +10,6 @@ Release/
 out/
 build/
 __pycache__/
-html_pages/
 
 # CMake generated
 CMakeCache.txt
@@ -32,4 +31,3 @@ compile_commands.json
 
 # Test artifacts
 test_results_geo.log
-test_report.html

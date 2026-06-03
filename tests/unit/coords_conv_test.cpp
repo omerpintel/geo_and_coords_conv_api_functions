@@ -6,6 +6,7 @@
 #include <cmath>
 #include <cstdint>
 #include <cfloat>
+#include <cstring>
 
 // --- Mini Test Framework ---
 int g_tests_passed = 0;
@@ -46,6 +47,29 @@ int g_tests_failed = 0;
             g_tests_failed++; \
         } \
     } while(0)
+
+// ========================================================================
+// SECTION 0: API Version Tests
+// ========================================================================
+
+void test_api_version() {
+    std::cout << "\n--- API Version ---\n";
+
+    ASSERT_TRUE(std::strcmp(GetApiVersionString(), "0.1.0") == 0, "Version string is 0.1.0");
+
+    uint16_t major = 99;
+    uint16_t minor = 99;
+    uint16_t patch = 99;
+    GetApiVersionNumbers(&major, &minor, &patch);
+
+    ASSERT_TRUE(major == 0, "Version major is 0");
+    ASSERT_TRUE(minor == 1, "Version minor is 1");
+    ASSERT_TRUE(patch == 0, "Version patch is 0");
+
+    GetApiVersionNumbers(nullptr, nullptr, nullptr);
+    std::cout << "[PASS] GetApiVersionNumbers with null outputs (no crash)" << std::endl;
+    g_tests_passed++;
+}
 
 // ========================================================================
 // SECTION 1: Coordinate Conversion Tests
@@ -436,12 +460,12 @@ void test_robustness_null_output_ptrs() {
     SPointNE pt = {5.0f, 5.0f};
 
     // Should not crash — just return silently
-    isInsidePolygon(poly, 4, pt, 0.0f, nullptr, nullptr);
-    std::cout << "[PASS] isInsidePolygon with null outResult/resultState (no crash)" << std::endl;
+    isInsidePolygonNED(poly, 4, pt, 0.0f, nullptr, nullptr);
+    std::cout << "[PASS] isInsidePolygonNED with null outResult/resultState (no crash)" << std::endl;
     g_tests_passed++;
 
-    doesLineIntersectPolygon(poly, 4, pt, 0.0f, 10.0f, nullptr, nullptr);
-    std::cout << "[PASS] doesLineIntersectPolygon with null out-params (no crash)" << std::endl;
+    doesLineIntersectPolygonNED(poly, 4, pt, 0.0f, 10.0f, nullptr, nullptr);
+    std::cout << "[PASS] doesLineIntersectPolygonNED with null out-params (no crash)" << std::endl;
     g_tests_passed++;
 }
 
@@ -454,7 +478,7 @@ void test_robustness_degenerate_polygons() {
     // All vertices at same point
     SPointNE degenerate[] = {{5.0f, 5.0f}, {5.0f, 5.0f}, {5.0f, 5.0f}};
     SPointNE pt = {5.0f, 5.0f};
-    isInsidePolygon(degenerate, 3, pt, 0.0f, &result, &state);
+    isInsidePolygonNED(degenerate, 3, pt, 0.0f, &result, &state);
     ASSERT_TRUE(state == EIsInsideResult::IS_INSIDE_OK, "Degenerate polygon (same point): state OK");
     // Point is on vertex -> should report inside/collision
     ASSERT_TRUE(result == 1, "Point on degenerate vertex: collision");
@@ -462,7 +486,7 @@ void test_robustness_degenerate_polygons() {
     // Collinear polygon (all points on a line)
     SPointNE collinear[] = {{0.0f, 0.0f}, {5.0f, 0.0f}, {10.0f, 0.0f}};
     SPointNE pt_online = {3.0f, 0.0f};
-    isInsidePolygon(collinear, 3, pt_online, 0.0f, &result, &state);
+    isInsidePolygonNED(collinear, 3, pt_online, 0.0f, &result, &state);
     ASSERT_TRUE(state == EIsInsideResult::IS_INSIDE_OK, "Collinear polygon: state OK (no crash)");
     // On boundary of a zero-area polygon
     std::cout << "[PASS] Collinear polygon handled without crash" << std::endl;
@@ -476,14 +500,14 @@ void test_robustness_extreme_coords() {
     SPointNE large_poly[] = {{1e6f, 1e6f}, {1e6f, 2e6f}, {2e6f, 2e6f}, {2e6f, 1e6f}};
     SPointNE large_pt = {1.5e6f, 1.5e6f};
     uint8_t result = 0, state = 0;
-    isInsidePolygon(large_poly, 4, large_pt, 0.0f, &result, &state);
+    isInsidePolygonNED(large_poly, 4, large_pt, 0.0f, &result, &state);
     ASSERT_TRUE(state == EIsInsideResult::IS_INSIDE_OK, "Large coords: state OK");
     ASSERT_TRUE(result == 1, "Large coords: point inside");
 
     // Very small polygon
     SPointNE tiny_poly[] = {{0.0f, 0.0f}, {0.0f, 1e-4f}, {1e-4f, 1e-4f}, {1e-4f, 0.0f}};
     SPointNE tiny_pt = {5e-5f, 5e-5f};
-    isInsidePolygon(tiny_poly, 4, tiny_pt, 0.0f, &result, &state);
+    isInsidePolygonNED(tiny_poly, 4, tiny_pt, 0.0f, &result, &state);
     ASSERT_TRUE(state == EIsInsideResult::IS_INSIDE_OK, "Tiny polygon: state OK");
     ASSERT_TRUE(result == 1, "Tiny polygon: point inside");
 }
@@ -548,20 +572,20 @@ void test_robustness_line_boundary_azimuths() {
     uint8_t result = 0, state = 0;
 
     // Azimuth exactly 0 (North)
-    doesLineIntersectPolygon(poly, 4, pt_outside, 0.0f, 20.0f, &result, &state);
+    doesLineIntersectPolygonNED(poly, 4, pt_outside, 0.0f, 20.0f, &result, &state);
     ASSERT_TRUE(state == ELineIntersectResult::LINE_INTERSECT_OK, "Azimuth 0: state OK");
 
     // Azimuth 360 (same as 0)
-    doesLineIntersectPolygon(poly, 4, pt_outside, 360.0f, 20.0f, &result, &state);
+    doesLineIntersectPolygonNED(poly, 4, pt_outside, 360.0f, 20.0f, &result, &state);
     ASSERT_TRUE(state == ELineIntersectResult::LINE_INTERSECT_OK, "Azimuth 360: state OK");
 
     // Azimuth 90 (East) - line from (-5, -5) going East, should cross polygon at east=0
     SPointNE pt_hits = {5.0f, -5.0f}; // north=5, east=-5 (west of polygon)
-    doesLineIntersectPolygon(poly, 4, pt_hits, 90.0f, 20.0f, &result, &state);
+    doesLineIntersectPolygonNED(poly, 4, pt_hits, 90.0f, 20.0f, &result, &state);
     ASSERT_TRUE(state == ELineIntersectResult::LINE_INTERSECT_OK && result == 1, "Azimuth 90 hitting polygon: collision");
 
     // Very small length (epsilon)
-    doesLineIntersectPolygon(poly, 4, pt_outside, 90.0f, 0.001f, &result, &state);
+    doesLineIntersectPolygonNED(poly, 4, pt_outside, 90.0f, 0.001f, &result, &state);
     ASSERT_TRUE(state == ELineIntersectResult::LINE_INTERSECT_OK && result == 0, "Tiny line outside: no collision");
 }
 
@@ -570,6 +594,9 @@ void test_robustness_line_boundary_azimuths() {
 // ========================================================================
 
 int main() {
+    // --- Section 0: API Version ---
+    test_api_version();
+
     // --- Section 1: Coordinate Conversions ---
     test_GeoToEcef_known_values();
     test_EcefToGeo_known_values();
