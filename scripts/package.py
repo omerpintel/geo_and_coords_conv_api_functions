@@ -15,7 +15,7 @@ import argparse
 from pathlib import Path
 
 SCRIPT_DIR = Path(__file__).resolve().parent
-PROJECT_ROOT = SCRIPT_DIR
+PROJECT_ROOT = SCRIPT_DIR.parent
 
 HEADERS = [
     PROJECT_ROOT / "include" / "api_functions.h",
